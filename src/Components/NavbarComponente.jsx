@@ -4,16 +4,25 @@ import { Router } from 'react-router-dom';
 
 const NavbarComponent = () => {
   return (
+    <>
+    <style>
+      {`
+        .bg-light {
+          background-image: linear-gradient(#99d8dd, #93d4da) !important;
+          background-size: cover;
+          background-color: #99d8dd !important;
+        }
+      `}
+    </style>
     <Navbar bg="light" expand="md" sticky="top" zIndex="1"
     style={{
       backgroundColor: '#99d8dd !important',
     }}
     >
       <Container>
-        <Navbar.Brand href="#" className="ml-auto">
+        <Navbar.Brand href="/" className="ml-auto">
           <img
             alt="UNAH Logo"
-            path="/"
             src="./assets/unah_logo.png"
             width="77"
             height="48.5"
@@ -24,6 +33,7 @@ const NavbarComponent = () => {
         </Navbar.Brand>
       </Container>
     </Navbar>
+    </>
   );
 };
 

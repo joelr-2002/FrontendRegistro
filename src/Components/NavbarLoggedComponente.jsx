@@ -3,9 +3,19 @@ import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 
 const NavbarLoggedInComponent = ({ onLogout }) => {
   return (
+    <>
+    <style>
+      {`
+        .bg-light {
+          background-image: linear-gradient(#99d8dd, #93d4da) !important;
+          background-size: cover;
+          background-color: #99d8dd !important;
+        }
+      `}
+    </style>
     <Navbar bg="light" expand="lg" sticky="top" zIndex="1">
       <Container>
-        <Navbar.Brand href="#">
+        <Navbar.Brand href="/">
           <img
             alt="UNAH Logo"
             href="/"
@@ -21,6 +31,7 @@ const NavbarLoggedInComponent = ({ onLogout }) => {
         </Nav>
       </Container>
     </Navbar>
+    </>
   );
 };
 
