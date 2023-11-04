@@ -1,31 +1,29 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   background-color: linear-gradient(#99d8dd, #5cb3c1) !important;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 /* Navbar */
 
 .navbar-brand {
-  font-family: 'Heebo', sans-serif !important;
+  font-family: "Heebo", sans-serif !important;
   font-weight: 700 !important;
   font-size: 1.5rem;
   display: flex !important;
   align-items: center !important;
   text-align: end !important;
 }
-
-
 
 /* Fin Navbar */
 
@@ -46,7 +44,7 @@ code {
 }
 
 .form-label {
-  font-family: 'Heebo', sans-serif;
+  font-family: "Heebo", sans-serif;
   font-weight: 300;
   margin-top: 10px;
 }
@@ -59,7 +57,7 @@ code {
   background-color: #01587a;
   border: none;
   border-radius: 10px;
-  font-family: 'Heebo', sans-serif;
+  font-family: "Heebo", sans-serif;
   font-weight: 700;
   width: 100%;
   margin-top: 10px;
@@ -70,7 +68,35 @@ code {
 }
 /* Fin Estilos Login */
 
+/*Estilos Menús*/
+.menu-container {
+  margin-top: 5%;
+  max-width: 80%;
+  height: 530px;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #e1e8ec;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
 
+.opciones-menu{
+  margin-top: 5%;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ebf0f3;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Heebo';
+  font-size: 25px;
+  color: #01587a;
+}
+
+
+
+/*Fin Estilos Menús*/
 
 /* Estilos Aspirantes */
 .inscripcion-container {

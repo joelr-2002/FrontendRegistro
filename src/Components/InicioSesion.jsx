@@ -35,6 +35,7 @@ const LoginComponent = () => {
                         <Col>
                             <h2 style={{ fontFamily: 'Heebo', fontWeight: 700 }}>Iniciar Sesión</h2>
                         </Col>
+                        
                     </Row>
                     <Form onSubmit={handleLogin}>
                         <Row className="mb-3">
@@ -47,6 +48,7 @@ const LoginComponent = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </Form.Group>
+                            
                         </Row>
 
                         <Row className="mb-3">
