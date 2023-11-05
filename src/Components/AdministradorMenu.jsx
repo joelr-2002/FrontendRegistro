@@ -6,13 +6,10 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 //Opciones Menú
 const OpcionesMenu = (props) => {
-
- 
-
   return (
     <>
       <Col>
-        <Link to="/formulario-aspirantes" style={{textDecoration: 'none'}}>
+        <Link to={props.ruta} style={{ textDecoration: "none" }}>
           <div className="opciones-menu">
             <FontAwesomeIcon icon={props.icono} size="1x" /> {props.opcion}
           </div>
@@ -40,33 +37,48 @@ const AdministradorMenu = () => {
                 `}
       </style>
 
-      <div className="menu-container">
-        <div className="login-content">
-          <Row className="mb-3">
-            <Col>
-              <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
-                Administrador
-              </h2>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <OpcionesMenu
-              icono={faArrowLeft}
-              opcion="Lista"
-              ruta="/formulario-aspirantes"
-            />
-            <OpcionesMenu
-              icono={faArrowLeft}
-              opcion="Lista"
-              ruta="/formulario-aspirantes"
-            />
-            <OpcionesMenu
-              icono={faArrowLeft}
-              opcion="Lista"
-              ruta="/formulario-aspirantes"
-            />
-          </Row>
-        </div>
+      <div className="containerP menu-container ">
+        <Row className="mb-3">
+          <Col>
+            <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
+              Administrador
+            </h2>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <OpcionesMenu
+            icono={faArrowLeft}
+            opcion="Habilitar Notas"
+            ruta="/administrador/habilitar-notas"
+          />
+          <OpcionesMenu
+            icono={faArrowLeft}
+            opcion="Docentes"
+            ruta="/administrador/creacion-docente"
+          />
+          <OpcionesMenu
+            icono={faArrowLeft}
+            opcion="Lista"
+            ruta="/formulario-aspirantes"
+          />
+        </Row>
+        <Row className="mb-3">
+          <OpcionesMenu
+            icono={faArrowLeft}
+            opcion="Habilitar Notas"
+            ruta="/administrador/habilitar-notas"
+          />
+          <OpcionesMenu
+            icono={faArrowLeft}
+            opcion="Docentes"
+            ruta="/administrador/creacion-docente"
+          />
+          <OpcionesMenu
+            icono={faArrowLeft}
+            opcion="Lista"
+            ruta="/formulario-aspirantes"
+          />
+        </Row>
       </div>
     </>
   );
