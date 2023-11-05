@@ -103,3 +103,80 @@ code {
 }
 
 /* Fin Estilos Aspirantes */
+
+
+/* -- ESTILOS DE MARIO -- */
+.btn-habilitar{
+  background-color: #01587a !important;
+  border: none !important;
+  border-radius: 10px;
+  font-family: "Heebo", sans-serif;
+  font-weight: 700;
+  width: 120px;
+  margin: 10px;
+}
+
+.btn-habilitar:hover {
+  background-color: #5cb3c1 !important;
+  border: none !important;
+}
+
+
+.btn-deshabilitar{
+  background-color: #2D2D2D !important;
+  border: none !important;
+  border-radius: 10px;
+  font-family: "Heebo", sans-serif;
+  font-weight: 700;
+  width: 120px;
+  margin: 10px;
+}
+
+.btn-deshabilitar:hover {
+  background-color: #8C8989 !important;
+  border: none !important;
+}
+
+/*Estilos Contenedor*/
+.containerP {
+  margin-top: 5%;
+  max-width: 80%;
+  height: 530px;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #e1e8ec;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Fin Contenedor */
+
+/*Estilos Menús*/
+.menu-container {
+  text-align: center;
+  
+}
+
+.opciones-menu{
+  margin-top: 5%;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ebf0f3;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Heebo';
+  font-size: 25px;
+  color: #01587a;
+}
+
+
+
+/*Fin Estilos Menús*/
+
+/* Estilos Administrador Notas */
+
+
+/*Fin Estilos Menús*/
