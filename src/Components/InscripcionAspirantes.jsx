@@ -3,6 +3,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import '../Styles/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import NavbarComponente from './NavbarComponente';
  
 
 var carreras = [{
@@ -115,8 +116,9 @@ const InscripcionAspirantes = () => {
           }
         `}
       </style>
+      <NavbarComponente />
       <div className="inscripcion-container text-center" style={{ position: 'relative' }}>
-        <a href="javascript:history.back()">
+        <a href="/">
           <FontAwesomeIcon icon={faArrowLeft} id='mr-2' className="mr-2" size="2rem" style={{ position: 'absolute', top: '25px', left: '40px' }} />
         </a>
         <h2 style={{ fontFamily: 'Heebo', fontWeight: 700 }}>

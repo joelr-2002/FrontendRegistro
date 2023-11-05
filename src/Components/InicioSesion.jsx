@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Form, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import NavbarComponente from './NavbarComponente';
+import Cookies from 'js-cookie';
+import apiurl from '../utils/apiurl.js';
 
 /**
  * Componente para el inicio de sesión.
@@ -22,8 +25,44 @@ const LoginComponent = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         validateForm();
+        
+        //Si email tiene letras o carácteres especiales, no es válido
+        if (email.match(/[^0-9]/)) {
+            setEmailValid(false);
+            setEmailError('Ingrese carácteres numéricos');
+        }
+
+        //Si email y password son válidos, se realiza la autenticación
         if (emailValid && passwordValid) {
-            //llamada a la api aqui
+            //Se crea el objeto con las opciones de la petición
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    
+                },
+                body: JSON.stringify({
+                    "username" : email,
+                    "contrasenia" : password
+                })
+            };
+
+            console.log(options);
+
+            //Se realiza la petición
+            fetch(apiurl+'/api/v1/login', options)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    if (data.mensaje === 'Se ha iniciado sesión exitosamente') {
+                        Cookies.set('token', data.token);
+                        Cookies.set('user', JSON.stringify(data.entidad));
+                        window.location.href = '/';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch((err) => console.error(err));
         }
     };
 
@@ -67,7 +106,7 @@ const LoginComponent = () => {
                     }
                 `}
             </style>
-
+            <NavbarComponente />
             <div className="login-container">
                 <div className="login-content">
                     <Row className="mb-3">

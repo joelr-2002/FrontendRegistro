@@ -14,7 +14,7 @@ const NavbarComponent = () => {
         }
       `}
     </style>
-    <Navbar bg="light" expand="md" sticky="top" zIndex="1"
+    <Navbar bg="light" expand="md" sticky="top" zindex="1"
     style={{
       backgroundColor: '#99d8dd !important',
     }}

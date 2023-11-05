@@ -9,6 +9,7 @@ const RoutesComponent = () => {
       <Routes>
         <Route path="/formulario-aspirantes" element={<InscripcionComponent />} />
         <Route path="/" element={<InicioSesion />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
   );
