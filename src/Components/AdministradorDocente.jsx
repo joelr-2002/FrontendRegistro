@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import '../Styles/index.css'
+import NavbarLoggedComponente from "./NavbarLoggedComponente";
 
 const CreacionDocente = () => {
   const [nombre, setNombre] = useState("");
@@ -13,7 +14,9 @@ const CreacionDocente = () => {
     // Aquí puedes agregar la lógica para enviar los datos a la API
     // y manejar la respuesta (por ejemplo, mostrar un mensaje de éxito)
   };
-  <style>
+  return (
+    <>
+    <style>
         {`
                     body {
                         background-color: #99d8dd;
@@ -21,7 +24,9 @@ const CreacionDocente = () => {
                 `}
       </style>
 
-  return (
+    <NavbarLoggedComponente
+      urlLogo= "../assets/unah_logo.png"
+    />
     <div className="containerP text-center">
       <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
         Datos del Docente
@@ -89,6 +94,7 @@ const CreacionDocente = () => {
         </Button>
       </Form>
     </div>
+    </>
   );
 };
 
