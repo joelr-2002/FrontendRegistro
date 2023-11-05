@@ -1,23 +1,23 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
+  
   background-color: linear-gradient(#99d8dd, #5cb3c1) !important;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
 /* Navbar */
 
 .navbar-brand {
-  font-family: "Heebo", sans-serif !important;
+  font-family: 'Heebo', sans-serif !important;
   font-weight: 700 !important;
   font-size: 1.5rem;
   display: flex !important;
@@ -44,7 +44,7 @@ code {
 }
 
 .form-label {
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   font-weight: 300;
   margin-top: 10px;
 }
@@ -57,7 +57,7 @@ code {
   background-color: #01587a;
   border: none;
   border-radius: 10px;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   font-weight: 700;
   width: 100%;
   margin-top: 10px;
@@ -66,9 +66,105 @@ code {
 .btn-primary:hover {
   background-color: #5cb3c1;
 }
+/* Fin Estilos Login */
 
 
-.btn-habilitar{
+
+/* Estilos Aspirantes */
+.inscripcion-container {
+  margin-top: 5%;
+  max-width: 600px;
+  margin: 3% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #e1e8ec;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 500px) {
+  .inscripcion-container {
+    margin-top: 5%;
+    max-width: 400px;
+    margin: 2% auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #e1e8ec;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #mr-2 {
+    position: absolute !important;
+    left: 10px !important;
+    top: 7px !important;
+  }
+  
+}
+
+/* Fin Estilos Aspirantes */
+
+
+
+
+
+/*Yo los hice*/
+/*Estilos Tipografía*/
+.titulos{
+  font-family: "Heebo";
+   font-weight: 700;
+   text-align: center;
+}
+
+.opciones{
+  font-size: 25px;
+  color: #01587a;
+}
+
+.texto{
+  
+}
+
+
+/*Fin Estilos Tipografía*/
+
+
+
+
+/*Estilos Contenedor*/
+.containerP {
+  margin-top: 5%;
+  max-width: 80%;
+  height: 530px;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #e1e8ec;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Fin Contenedor */
+
+/*Estilos Menús*/
+.menu-container {
+  text-align: center;
+}
+
+.opciones-menu {
+  margin-top: 5%;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ebf0f3;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Heebo";
+}
+
+/*Fin Estilos Menús*/
+
+/*Notas btns*/
+.btn-habilitar {
   background-color: #01587a !important;
   border: none !important;
   border-radius: 10px;
@@ -83,9 +179,8 @@ code {
   border: none !important;
 }
 
-
-.btn-deshabilitar{
-  background-color: #2D2D2D !important;
+.btn-deshabilitar {
+  background-color: #2d2d2d !important;
   border: none !important;
   border-radius: 10px;
   font-family: "Heebo", sans-serif;
@@ -95,65 +190,6 @@ code {
 }
 
 .btn-deshabilitar:hover {
-  background-color: #8C8989 !important;
+  background-color: #8c8989 !important;
   border: none !important;
 }
-
-
-/* Fin Estilos Login */
-/*Estilos Contenedor*/
-.containerP {
-  margin-top: 5%;
-  max-width: 80%;
-  height: 530px;
-  margin: 2% auto;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #e1e8ec;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-
-
-/* Fin Contenedor */
-
-/*Estilos Menús*/
-.menu-container {
-  text-align: center;
-  
-}
-
-.opciones-menu{
-  margin-top: 5%;
-  margin: 2% auto;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #ebf0f3;
-  text-align: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  font-family: 'Heebo';
-  font-size: 25px;
-  color: #01587a;
-}
-
-
-
-/*Fin Estilos Menús*/
-
-/* Estilos Administrador Notas */
-
-
-/*Fin Estilos Menús*/
-
-/* Estilos Aspirantes */
-.inscripcion-container {
-  margin-top: 5%;
-  max-width: 600px;
-  margin: 3% auto;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #e1e8ec;
-  text-align: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-/* Fin Estilos Aspirantes */

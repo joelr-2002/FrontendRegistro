@@ -15,6 +15,10 @@ const RoutesComponent = () => {
       <Routes>
         <Route path="/formulario-aspirantes" element={<InscripcionComponent />} />
         <Route path="/" element={<InicioSesion />} />
+
+
+
+        
         <Route path="/administrador" element={<AdministradorMenu />} />
         <Route path="/administrador/habilitar-notas" element={<AdministradorNotas />} />
         <Route path="/administrador/creacion-docente" element={<CreacionDocente />} />

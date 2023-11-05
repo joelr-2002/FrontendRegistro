@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import NavbarComponente from "./NavbarComponente";
 
 const AdministradorNotas = () => {
   const [habilitadoNotas, setHabilitadoNotas] = useState(false);
@@ -10,24 +10,19 @@ const AdministradorNotas = () => {
     <>
       <style>
         {`
-                    body {
-                        background-color: #99d8dd;
-                    }
-                `}
+          body {
+            background-size: cover;
+            background-image: linear-gradient(#99d8dd, #5cb3c1) !important;
+            background-repeat: no-repeat;
+            background-color: #5cb3c1 !important;
+          }
+        `}
       </style>
-
+      <NavbarComponente />
       <div className="containerP">
         <Row className="mb-3">
           <Col>
-            <h2
-              style={{
-                fontFamily: "Heebo",
-                fontWeight: 700,
-                textAlign: "center",
-              }}
-            >
-              Notas
-            </h2>
+            <h2 className="titulos">Notas</h2>
           </Col>
         </Row>
         <div>Habilitar subida de notas para los docentes</div>
