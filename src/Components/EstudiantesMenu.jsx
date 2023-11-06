@@ -20,13 +20,13 @@ const OpcionesMenu = (props) => {
   );
 };
 
-const AdministradorMenu = () => {
+const EstudianteMenu = () => {
   return (
     <>
       <style>
         {`
                     body {
-                        background-color: #99d8dd;
+                        background-color: #5cb3c1 !important;
                     }
                     .login-container {
                         display: flex;
@@ -37,47 +37,27 @@ const AdministradorMenu = () => {
                     }
                 `}
       </style>
-      <NavbarLoggedInComponent urlLogo="./assets/unah_logo.png" />     
+    <NavbarLoggedInComponent
+        urlLogo= "./assets/unah_logo.png"
+    />
       <div className="containerP menu-container ">
         <Row className="mb-3">
           <Col>
             <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
-              Administrador
+              Estudiantes
             </h2>
           </Col>
         </Row>
         <Row className="mb-3">
           <OpcionesMenu
             icono={faArrowLeft}
-            opcion="Habilitar Notas"
-            ruta="/administrador/habilitar-notas"
+            opcion="Notas"
+            ruta="/estudiantes/evaluacion-docente"
           />
           <OpcionesMenu
             icono={faArrowLeft}
-            opcion="Docentes"
-            ruta="/administrador/creacion-docente"
-          />
-          <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Lista"
-            ruta="/formulario-aspirantes"
-          />
-        </Row>
-        <Row className="mb-3">
-          <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Habilitar Notas"
-            ruta="/administrador/habilitar-notas"
-          />
-          <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Docentes"
-            ruta="/administrador/creacion-docente"
-          />
-          <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Lista"
-            ruta="/formulario-aspirantes"
+            opcion="Cancelaciones"
+            ruta="/estudiantes/cancelaciones"
           />
         </Row>
       </div>
@@ -85,4 +65,4 @@ const AdministradorMenu = () => {
   );
 };
 
-export default AdministradorMenu;
+export default EstudianteMenu;

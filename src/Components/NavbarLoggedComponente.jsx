@@ -9,12 +9,16 @@ const NavbarLoggedInComponent = ({ onLogout, urlLogo }) => {
       {`
         .bg-light {
           background-image: linear-gradient(#99d8dd, #93d4da) !important;
-          background-size: cover;
+          background-size: cover !important;
           background-color: #99d8dd !important;
         }
       `}
     </style>
-    <Navbar bg="light" expand="lg" sticky="top" zIndex="1">
+    <Navbar bg="light" expand="md" sticky="top" zindex="1"
+    style={{
+      backgroundColor: '#99d8dd !important',
+    }}
+    >
       <Container>
         <Navbar.Brand href="/">
           <img

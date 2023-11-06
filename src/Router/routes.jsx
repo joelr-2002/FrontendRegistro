@@ -5,6 +5,10 @@ import InscripcionComponent from "../Components/InscripcionAspirantes";
 import AdministradorDocente from "../Components/AdministradorDocente";
 import AdministradorMenu from "../Components/AdministradorMenu";
 import AdministradorNotas from "../Components/AdministradorNotas";
+import EstudiantesMenu from "../Components/EstudiantesMenu";
+import EstudiantesEvalucionDocente from "../Components/EstudiantesEvaluacionDocente";
+import EstudiantesNotas from "../Components/EstudiantesNotas";
+import EstudiantesCancelaciones from "../Components/EstudiantesCancelaciones";
 
 const RoutesComponent = () => {
   return (
@@ -16,6 +20,10 @@ const RoutesComponent = () => {
         <Route path="/administrador" element={<AdministradorMenu />} />
         <Route path="/administrador/creacion-docente" element={<AdministradorDocente />} />
         <Route path="/administrador/habilitar-notas" element={<AdministradorNotas />} />
+        <Route path="/estudiantes" element={<EstudiantesMenu />} />
+        <Route path="/estudiantes/evaluacion-docente" element={<EstudiantesEvalucionDocente />} />
+        <Route path="/estudiantes/notas" element={<EstudiantesNotas />} />
+        <Route path="/estudiantes/cancelaciones" element={<EstudiantesCancelaciones />} />
       </Routes>
     </Router>
   );
