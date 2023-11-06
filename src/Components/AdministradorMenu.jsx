@@ -2,8 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import NavbarComponente from './NavbarComponente';
+import { faFileCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faChalkboardUser } from "@fortawesome/free-solid-svg-icons";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faRulerHorizontal } from "@fortawesome/free-solid-svg-icons";
+import { faFileCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faBuildingColumns } from "@fortawesome/free-solid-svg-icons";
+import NavbarLoggedInComponent from './NavbarLoggedComponente';
+
+
 
 //Opciones Menú
 const OpcionesMenu = (props) => {
@@ -12,7 +19,8 @@ const OpcionesMenu = (props) => {
       <Col>
         <Link to={props.ruta} style={{ textDecoration: "none" }}>
           <div className="opciones-menu opciones">
-            <FontAwesomeIcon icon={props.icono} size="1x" /> {props.opcion}
+            <FontAwesomeIcon icon={props.icono} size="1.8x" /> 
+            <br></br>{props.opcion}
           </div>
         </Link>
       </Col>
@@ -20,7 +28,8 @@ const OpcionesMenu = (props) => {
   );
 };
 
-const AdministradorMenu = () => {
+//Se acortará el nombre de Administrador a Adm para mayor facilidad
+const AdmMenu = () => {
   return (
     <>
       <style>
@@ -33,7 +42,7 @@ const AdministradorMenu = () => {
           }
         `}
       </style>
-      <NavbarComponente />
+      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png"> </NavbarLoggedInComponent>
 
       <div className="containerP menu-container ">
         <Row className="mb-3">
@@ -45,35 +54,35 @@ const AdministradorMenu = () => {
         </Row>
         <Row className="mb-3">
           <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Habilitar Notas"
+            icono={faFileCircleCheck}
+            opcion="Notas"
             ruta="/administrador/habilitar-notas"
           />
           <OpcionesMenu
-            icono={faArrowLeft}
+            icono={faChalkboardUser}
             opcion="Docentes"
             ruta="/administrador/creacion-docente"
           />
           <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Lista"
+            icono={faUsers}
+            opcion="Aspirantes"
             ruta="/formulario-aspirantes"
           />
         </Row>
         <Row className="mb-3">
           <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Habilitar Notas"
+            icono={faRulerHorizontal}
+            opcion="Planificación Académica"
             ruta="/administrador/habilitar-notas"
           />
           <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Docentes"
+            icono={faFileCircleExclamation}
+            opcion="Cancelaciones Excepcionales"
             ruta="/administrador/creacion-docente"
           />
           <OpcionesMenu
-            icono={faArrowLeft}
-            opcion="Lista"
+            icono={faBuildingColumns}
+            opcion="Matrícula"
             ruta="/formulario-aspirantes"
           />
         </Row>
@@ -82,4 +91,4 @@ const AdministradorMenu = () => {
   );
 };
 
-export default AdministradorMenu;
+export default AdmMenu;

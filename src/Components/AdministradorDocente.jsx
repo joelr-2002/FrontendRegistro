@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
-import NavbarComponente from "./NavbarComponente";
+import NavbarLoggedInComponent from './NavbarLoggedComponente';
 import "../Styles/index.css";
 
 const CreacionDocente = () => {
@@ -26,7 +26,7 @@ const CreacionDocente = () => {
           }
         `}
       </style>
-      <NavbarComponente />
+      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png"> </NavbarLoggedInComponent>
       <div className="containerP text-center">
         <h2 className="titulos">
           Datos del Docente
