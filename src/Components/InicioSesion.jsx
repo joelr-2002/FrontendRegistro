@@ -17,6 +17,32 @@ const LoginComponent = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
+    //Revisa el rol guardado en la cookie para redirigir al usuario a la página correspondiente
+    const [redirected, setRedirected] = useState(false);
+    const rol = Cookies.get('user');
+if (!redirected) {
+    if (rol === 'estudiante') {
+        setRedirected(true);
+        window.location.href = '/estudiante';
+    } else if (rol === 'docente') {
+        setRedirected(true);
+        window.location.href = '/docente';
+    } else if (rol === 'Administrador') {
+        //Revisa en el header el token para saber si el usuario está autenticado
+            //hace un fetch con el bearer token en el header para saber si el token es válido
+            fetch(apiurl+'/maestros', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + Cookies.get('token')
+                }
+            }).then((res) => {
+                console.log(res.json());
+                //window.location.href = '/administrador';
+            })
+        
+    }
+}
+
     /**
      * Función que se ejecuta al enviar el formulario de inicio de sesión.
      * Valida los campos del formulario y, si son válidos, realiza la autenticación.
@@ -27,39 +53,27 @@ const LoginComponent = () => {
         validateForm();
         
         //Si email tiene letras o carácteres especiales, no es válido
-        if (email.match(/[^0-9]/)) {
-            setEmailValid(false);
-            setEmailError('Ingrese carácteres numéricos');
-        }
-
+       
         //Si email y password son válidos, se realiza la autenticación
         if (emailValid && passwordValid) {
-            //Se crea el objeto con las opciones de la petición
-            const options = {
+            //Se realiza la petición
+            fetch(apiurl+'/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    
                 },
                 body: JSON.stringify({
-                    "username" : email,
-                    "contrasenia" : password
+                    "correo" : email,
+                    "password" : password
                 })
-            };
-
-            console.log(options);
-
-            //Se realiza la petición
-            fetch(apiurl+'/api/v1/login', options)
+            })
                 .then((res) => res.json())
                 .then((data) => {
                     console.log(data);
-                    if (data.mensaje === 'Se ha iniciado sesión exitosamente') {
+                    if (data.error === undefined) {
+                        console.log('Usuario autenticado');
                         Cookies.set('token', data.token);
-                        Cookies.set('user', JSON.stringify(data.entidad));
-                        window.location.href = '/';
-                    } else {
-                        alert(data.message);
+                        Cookies.set('user', data.rol);
                     }
                 })
                 .catch((err) => console.error(err));
@@ -123,13 +137,6 @@ const LoginComponent = () => {
                                     placeholder="Ingrese su No. Cuenta"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    min="0"
-                                    max="99999999999"
-                                    onKeyPress={(event) => {
-                                        if (!/[0-9]/.test(event.key)) {
-                                            event.preventDefault();
-                                        }
-                                    }}
                                     required
                                 />
                                 <span style={{ color: 'red' }}>{emailError}</span>

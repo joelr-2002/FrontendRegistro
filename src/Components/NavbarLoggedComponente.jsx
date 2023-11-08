@@ -1,8 +1,15 @@
+import Cookies from 'js-cookie';
 import React from 'react';
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 
 
-const NavbarLoggedInComponent = ({ onLogout, urlLogo }) => {
+function onLogout() {
+  Cookies.remove('token');
+  Cookies.remove('user');
+  window.location.href = '/';
+}
+
+const NavbarLoggedInComponent = ({ urlLogo }) => {
   return (
     <>
     <style>

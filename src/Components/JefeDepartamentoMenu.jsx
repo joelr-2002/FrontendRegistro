@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap, faCalendarTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarTimes, faTasks, faCheckToSlot, faHistory, faStar, faSignal, faKey } from "@fortawesome/free-solid-svg-icons";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 
 //Opciones Menú
@@ -46,19 +46,44 @@ const EstudianteMenu = () => {
         <Row className="mb-3">
           <Col>
             <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
-              Estudiantes
+              Jefe de Departamento
+            </h2>
+            <h2>
+                Facultad: --placeholder--
             </h2>
           </Col>
         </Row>
         <Row className="mb-3">
           <OpcionesMenu
-            icono={faGraduationCap}
-            opcion="Notas"
+            icono={faTasks}
+            opcion="Planificación académica"
             ruta="/estudiantes/evaluacion-docente"
           />
           <OpcionesMenu
-            icono={faCalendarTimes}
-            opcion="Cancelaciones"
+            icono={faCheckToSlot}
+            opcion="Evaluación Docente"
+            ruta="/estudiantes/cancelaciones"
+          />
+          <OpcionesMenu
+            icono={faHistory}
+            opcion="Historial Estudiantil"
+            ruta="/estudiantes/cancelaciones"
+          />
+        </Row>
+        <Row className="mb-3">
+          <OpcionesMenu
+            icono={faStar}
+            opcion="Calficaciones por docente"
+            ruta="/estudiantes/evaluacion-docente"
+          />
+          <OpcionesMenu
+            icono={faSignal}
+            opcion="Estadísticas"
+            ruta="/estudiantes/cancelaciones"
+          />
+          <OpcionesMenu
+            icono={faKey}
+            opcion="Reiniciar Clave Docente"
             ruta="/estudiantes/cancelaciones"
           />
         </Row>
