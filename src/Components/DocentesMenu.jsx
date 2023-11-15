@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarTimes, faTasks, faCheckToSlot, faHistory, faStar, faSignal, faKey } from "@fortawesome/free-solid-svg-icons";
+import { faChalkboardTeacher, faCalendarTimes } from "@fortawesome/free-solid-svg-icons";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 
 //Opciones Menú
@@ -22,7 +22,7 @@ const OpcionesMenu = (props) => {
   );
 };
 
-const EstudianteMenu = () => {
+const DocentesMenu = () => {
   return (
     <>
       <style>
@@ -40,57 +40,26 @@ const EstudianteMenu = () => {
                 `}
       </style>
     <NavbarLoggedInComponent
-        urlLogo= "../../assets/unah_logo.png"
+        urlLogo= "./assets/unah_logo.png"
     />
       <div className="containerP menu-container ">
         <Row className="mb-3">
           <Col>
             <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
-              Jefe de Departamento
+              Docentes
             </h2>
-            <h4>
-              Bienvenido --placeholder--
-            </h4>
-            <h4>
-                Facultad: --placeholder--
-            </h4>
-            <h4>
-                Centro Universitario: --placeholder--
-            </h4>
           </Col>
         </Row>
         <Row className="mb-3">
           <OpcionesMenu
-            icono={faTasks}
-            opcion="Secciones"
-            ruta="/jefe-departamento/planificacion-academica-menu"
+            icono={faChalkboardTeacher}
+            opcion="Ingresar Notas"
+            ruta="/docentes/notas"
           />
           <OpcionesMenu
-            icono={faCheckToSlot}
-            opcion="Evaluación Docente"
-            ruta="/estudiantes/cancelaciones"
-          />
-          <OpcionesMenu
-            icono={faHistory}
-            opcion="Historial Estudiantil"
-            ruta="/estudiantes/cancelaciones"
-          />
-        </Row>
-        <Row className="mb-3">
-          <OpcionesMenu
-            icono={faStar}
-            opcion="Calficaciones por docente"
-            ruta="/estudiantes/evaluacion-docente"
-          />
-          <OpcionesMenu
-            icono={faSignal}
-            opcion="Estadísticas"
-            ruta="/estudiantes/cancelaciones"
-          />
-          <OpcionesMenu
-            icono={faKey}
-            opcion="Reiniciar Clave Docente"
-            ruta="/estudiantes/cancelaciones"
+            icono={faCalendarTimes}
+            opcion="Clases"
+            //ruta="/docentes/cancelaciones"
           />
         </Row>
       </div>
@@ -98,4 +67,4 @@ const EstudianteMenu = () => {
   );
 };
 
-export default EstudianteMenu;
+export default DocentesMenu;

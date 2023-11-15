@@ -41,6 +41,9 @@ const CancelacionExcepcional = () => {
     <>
     <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png"> </NavbarLoggedInComponent>
     <Container className="containerP">
+    <h2 className="titulos text-center">
+         Cancelaciones
+        </h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="clase">
           <Form.Label>Clase a Cancelar</Form.Label>

@@ -1,28 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import '../Styles/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import NavbarComponente from './NavbarComponente';
- 
+import apiurl from '../utils/apiurl';
 
-var carreras = [{
-  "id": 1,
-  "nombre": "Ingeniería en Sistemas"
-},
-{
-  "id": 2,
-  "nombre": "Ingeniería Civil"
-}
-];
-
-/**
- * Componente para registrar nuevos aspirantes.
- * @returns {JSX.Element} Componente InscripcionAspirantes.
- */
 const InscripcionAspirantes = () => {
-  const [nombre, setNombre] = useState('');
-  const [apellidos, setApellidos] = useState('');
+  const [primerNombre, setPrimerNombre] = useState('');
+  const [segundoNombre, setSegundoNombre] = useState('');
+  const [primerApellido, setPrimerApellido] = useState('');
+  const [segundoApellido, setSegundoApellido] = useState('');
   const [carreraPrincipal, setCarreraPrincipal] = useState('');
   const [carreraSecundaria, setCarreraSecundaria] = useState('');
   const [identidad, setIdentidad] = useState('');
@@ -30,244 +17,550 @@ const InscripcionAspirantes = () => {
   const [telefono, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
   const [centroRegional, setCentroRegional] = useState('');
-  const [nombreError, setNombreError] = useState(false);
-  const [apellidosError, setApellidosError] = useState(false);
-  const [carreraPrincipalError, setCarreraPrincipalError] = useState(false);
-  const [identidadError, setIdentidadError] = useState(false);
-  const [fotoCertificadoError, setFotoCertificadoError] = useState(false);
-  const [telefonoError, setTelefonoError] = useState(false);
-  const [correoError, setCorreoError] = useState(false);
-  const [centroRegionalError, setCentroRegionalError] = useState(false);
+  const [direccion, setDireccion] = useState('');
+  const [formularioEnviado, setFormularioEnviado] = useState(false);
+  const [isFormularioValido, setIsFormularioValido] = useState(false);
 
-  /**
-   * Función que se ejecuta al enviar el formulario.
-   * Verifica si algún campo está vacío y muestra un mensaje de error si es necesario.
-   * Si no hay campos vacíos, envía el formulario y redirecciona a la página de inicio.
-   * @param {Event} e - Evento de envío del formulario.
-   */
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [centros, setCentros] = useState([]);
+  useEffect(() => {
+    fetch(apiurl + '/api/v1/centros')
+      .then(response => response.json())
+      .then(data => {
+        setCentros(data.data);
+        console.log(data);
+      })
+      .catch(error => console.log(error));
+  }, []);
 
-    // Verificar si algún campo está vacío
-    if (nombre === '') {
-      setNombreError(true);
-    } else {
-      setNombreError(false);
-    }
-    if (apellidos === '') {
-      setApellidosError(true);
-    } else {
-      setApellidosError(false);
-    }
-    if (carreraPrincipal === '') {
-      setCarreraPrincipalError(true);
-    } else {
-      setCarreraPrincipalError(false);
-    }
-    if (identidad === '') {
-      setIdentidadError(true);
-    } else {
-      setIdentidadError(false);
-    }
-    if (fotoCertificado === null) {
-      setFotoCertificadoError(true);
-    }else {
-      setFotoCertificadoError(false);
-    }
-    if (telefono === '') {
-      setTelefonoError(true);
-    } else {
-      setTelefonoError(false);
-    }
-    if (correo === '') {
-      setCorreoError(true);
-    } else {
-      setCorreoError(false);
-    }
-    if (centroRegional === '') {
-      setCentroRegionalError(true);
-    } else {
-      setCentroRegionalError(false);
-    }
+  const [carreras, setCarreras] = useState([]);
+  const obtenerCarrerasCentro = (e) => {
+    const ID = e;
+    setCentroRegional(ID);
+    fetch(apiurl + '/api/v1/carreras/?idCentro=' + ID)
+      .then(response => response.json())
+      .then(data => {
+        setCarreras(data.data);
+        console.log(data);
+      })
+      .catch(error => console.log(error));
+  };
 
-    // Si hay campos vacíos no se envía el formulario
-    if (nombreError || apellidosError || carreraPrincipalError || identidadError || fotoCertificadoError || telefonoError || correoError || centroRegionalError) {
-      //Proceder a enviar el formulario
-      alert('Formulario enviado correctamente');
-      //redireccionar a la pagina de inicio
-      window.location.href = '/';
-    }
-    else {
-      //evita que se envie el formulario
-      console.log('Formulario no enviado');
-      e.preventDefault();
+   const [errores, setErrores] = useState({
+    primerNombre: '',
+    segundoNombre: '',
+    primerApellido: '',
+    segundoApellido: '',
+    carreraPrincipal: '',
+    carreraSecundaria: '',
+    identidad: '',
+    fotoCertificado: '',
+    telefono: '',
+    correo: '',
+    centroRegional: '',
+    direccion: '',
+  });
+
+  const validarPrimerNombre = () => {
+    if (!primerNombre) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        primerNombre: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        primerNombre: '',
+      }));
     }
   };
 
-  return (
-    <>
-      <style>
-        {`
-          body {
-            background-size: cover;
-            background-image: linear-gradient(#99d8dd, #5cb3c1) !important;
-            background-repeat: no-repeat;
-            background-color: #5cb3c1 !important;
+  const validarSegundoNombre = () => {
+    if (!segundoNombre) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        segundoNombre: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        segundoNombre: '',
+      }));
+    }
+  }
+
+  const validarPrimerApellido = () => {
+    if (!primerApellido) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        primerApellido: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        primerApellido: '',
+      }));
+    }
+  }
+
+  const validarSegundoApellido = () => {
+    if (!segundoApellido) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        segundoApellido: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        segundoApellido: '',
+      }));
+    }
+  }
+
+  const validarCarreraPrincipal = () => {
+    if (!carreraPrincipal) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        carreraPrincipal: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        carreraPrincipal: '',
+      }));
+    }
+  }
+
+  const validarCarreraSecundaria = () => {
+    if (!carreraSecundaria) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        carreraSecundaria: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        carreraSecundaria: '',
+      }));
+    }
+  }
+
+  const validarIdentidad = () => {
+    if (!identidad) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        identidad: 'Este campo es obligatorio',
+      }));
+    } else {
+      if (identidad.length !== 13) {
+        setErrores((prevErrores) => ({
+          ...prevErrores,
+          identidad: 'El número de identidad debe contener 13 dígitos',
+        }));
+      } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        identidad: '',
+      }));
+    }
+  }
+  }
+
+  const validarFotoCertificado = () => {
+    if (!fotoCertificado) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        fotoCertificado: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        fotoCertificado: '',
+      }));
+    }
+  }
+
+  const validarTelefono = () => {
+    if (!telefono) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        telefono: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        telefono: '',
+      }));
+    }
+  }
+
+  const validarCorreo = () => {
+    if (!correo) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        correo: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        correo: '',
+      }));
+    }
+  }
+
+  const validarCentroRegional = () => {
+    if (!centroRegional) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        centroRegional: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        centroRegional: '',
+      }));
+    }
+  }
+
+  const validarDireccion = () => {
+    if (!direccion) {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        direccion: 'Este campo es obligatorio',
+      }));
+    } else {
+      setErrores((prevErrores) => ({
+        ...prevErrores,
+        direccion: '',
+      }));
+    }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    validarPrimerNombre();
+    validarSegundoNombre();
+    validarPrimerApellido();
+    validarSegundoApellido();
+    validarCarreraPrincipal();
+    validarCarreraSecundaria();
+    validarIdentidad();
+    validarFotoCertificado();
+    validarTelefono();
+    validarCorreo();
+    validarCentroRegional();
+    validarDireccion();
+
+    setFormularioEnviado(true);
+
+    if (isFormularioValido) {
+      console.log('Formulario válido');
+      const formData = new FormData();
+      formData.append('dni', identidad);
+      formData.append('primer_nombre', primerNombre);
+      formData.append('segundo_nombre', segundoNombre);
+      formData.append('primer_apellido', primerApellido);
+      formData.append('segundo_apellido', segundoApellido);
+      formData.append('telefono', telefono);
+      formData.append('direccion', direccion);
+      formData.append('correo_electronico', correo);
+      formData.append('carrera_principal_id', carreraPrincipal);
+      formData.append('carrera_secundaria_id', carreraSecundaria);
+      formData.append('centro_id', centroRegional);
+      formData.append('foto_certificado', fotoCertificado);
+
+      fetch(apiurl + '/api/v1/aspirantes', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.mensaje === 'Aspirante creado con éxito!.') {
+            alert('Se ha enviado su solicitud de inscripción exitosamente.');
+            window.location.href = '/';
+          } else {
+            alert('Ha ocurrido un error al enviar su solicitud de inscripción.');
+            console.log(data.error);
           }
-        `}
-      </style>
-      <NavbarComponente />
-      <div className="inscripcion-container text-center" style={{ position: 'relative' }}>
-        <a href="/">
-          <FontAwesomeIcon icon={faArrowLeft} id='mr-2' className="mr-2" size="2rem" style={{ position: 'absolute', top: '25px', left: '40px' }} />
-        </a>
-        <h2 style={{ fontFamily: 'Heebo', fontWeight: 700 }}>
-            Formulario de Inscripción
-        </h2>
-        <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col className="col-12 col-md-6">
-              <Form.Group controlId="formNombre">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingrese su nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  isInvalid={nombreError} 
-                />
-                <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-              </Form.Group>
-            </Col>
-            <Col className="col-12 col-md-6">
-              <Form.Group controlId="formApellidos">
-                <Form.Label>Apellidos</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingrese sus apellidos"
-                  value={apellidos}
-                  onChange={(e) => setApellidos(e.target.value)}
-                  isInvalid={apellidosError} 
-                />
-                <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-12 col-md-6">
-              <Form.Group controlId="formCarreraPrincipal">
-                <Form.Label>Carrera Principal</Form.Label>
-                <Form.Control as="select" value={carreraPrincipal} onChange={(e) => setCarreraPrincipal(e.target.value)} isInvalid={carreraPrincipalError}>
-                      <option value="">Seleccione una carrera</option>
-                      {carreras.map(carrera => (
-                        <option key={carrera.id} value={carrera.nombre}>{carrera.nombre}</option>
-                      ))}
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-                  </Form.Group>
-                </Col>
-                <Col className="col-12 col-md-6">
-                  <Form.Group controlId="formCarreraSecundaria">
-                    <Form.Label>Carrera Secundaria</Form.Label>
-                    <Form.Control as="select" value={carreraSecundaria} onChange={(e) => setCarreraSecundaria(e.target.value)}>
-                      <option value="">Seleccione una carrera</option>
-                      {carreras.map(carrera => (
-                        <option key={carrera.id} value={carrera.nombre}>{carrera.nombre}</option>
-                      ))}
-                    </Form.Control>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col className="col-12">
+        })
+        .catch((err) => console.error(err));
+    }
+  };
+
+  useEffect(() => {
+    if (formularioEnviado) {
+      if (
+        errores.primerNombre === '' &&
+        errores.segundoNombre === '' &&
+        errores.primerApellido === '' &&
+        errores.segundoApellido === '' &&
+        errores.carreraPrincipal === '' &&
+        errores.carreraSecundaria === '' &&
+        errores.identidad === '' &&
+        errores.fotoCertificado === '' &&
+        errores.telefono === '' &&
+        errores.correo === '' &&
+        errores.centroRegional === '' &&
+        errores.direccion === ''
+      ) {
+        setIsFormularioValido(true);
+      } else {
+        console.log('Formulario inválido');
+        setIsFormularioValido(false);
+      }
+    }
+  }, [formularioEnviado, errores]);
+
+    return (
+      <>
+        <style>
+          {`
+            body {
+              background-size: cover;
+              background-image: linear-gradient(#99d8dd, #5cb3c1) !important;
+              background-repeat: no-repeat;
+              background-color: #5cb3c1 !important;
+            }
+          `}
+        </style>
+        <NavbarComponente />
+        <div className="inscripcion-container text-center" style={{ position: 'relative' }}>
+          <a href="/">
+            <FontAwesomeIcon icon={faArrowLeft} id='mr-2' className="mr-2" size="2rem" style={{ position: 'absolute', top: '25px', left: '40px' }} />
+          </a>
+          <h2 style={{ fontFamily: 'Heebo', fontWeight: 700 }}>
+              Formulario de Inscripción
+          </h2>
+          <Form>
+            <Row>
+              <Col className="col-12 col-md-6">
+                <Form.Group controlId="forPrimerNombre">
+                  <Form.Label>Primer Nombre</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Ingrese su nombre"
+                    value={primerNombre}
+                    onChange={(e) => {
+                      setPrimerNombre(e.target.value);
+                      validarPrimerNombre();
+                    }}
+                    isInvalid={errores.primerNombre !== ''} 
+                  />
+                  <Form.Control.Feedback type="invalid">*{errores.primerNombre}</Form.Control.Feedback> 
+                </Form.Group>
+              </Col>
+              <Col className='col-12 col-md-6'>
+                <Form.Group controlId="formSegundoNombre">
+                  <Form.Label>Segundo Nombre</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Ingrese su segundo nombre'
+                    value={segundoNombre}
+                    onChange={(e) => {
+                      setSegundoNombre(e.target.value);
+                      validarSegundoNombre();
+                    }}
+                    isInvalid={errores.segundoNombre !== ''}
+                  />
+                  <Form.Control.Feedback type="invalid">*{errores.segundoNombre}</Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="col-12 col-md-6">
+                <Form.Group controlId="formPrimerApellido">
+                  <Form.Label>Primer Apellido</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Ingrese su primer apellido'
+                    value={primerApellido}
+                    onChange={(e) => {
+                      setPrimerApellido(e.target.value);
+                      validarPrimerApellido();
+                    }}
+                    isInvalid={errores.primerApellido !== ''}
+                  />
+                  <Form.Control.Feedback type="invalid">*{errores.primerApellido}</Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col className="col-12 col-md-6">
+                <Form.Group controlId="formSegundoApellido">
+                  <Form.Label>Segundo Apellido</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Ingrese su segundo apellido'
+                    value={segundoApellido}
+                    onChange={(e) => {
+                      setSegundoApellido(e.target.value);
+                      validarSegundoApellido();
+                    }}
+                    isInvalid={errores.segundoApellido !== ''}
+                  />
+                  <Form.Control.Feedback type="invalid">*{errores.segundoApellido}</Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="col-12">
+                <Form.Group controlId="formCentroRegional">
+                  <Form.Label>Centro Regional</Form.Label>
+                  <Form.Control as="select" value={centroRegional} onChange={(e)=>{
+                    setCentroRegional(e.target.value);
+                    obtenerCarrerasCentro(e.target.value);
+                    validarCentroRegional();
+                  }} isInvalid={errores.centroRegional !== ''}>
+                    <option value="">Seleccione un centro regional</option>
+                    {centros.map(centro => (
+                      <option key={centro.ID} value={centro.ID}>{centro.NOMBRE}</option>
+                    ))}
+                  </Form.Control>
+                  <Form.Control.Feedback type="invalid">*{errores.centroRegional}</Form.Control.Feedback> 
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row hidden={centroRegional === '' || centroRegional === 'Seleccione un centro regional'}>
+              <Col className="col-12 col-md-6">
+                <Form.Group controlId="formCarreraPrincipal">
+                  <Form.Label>Carrera Principal</Form.Label>
+                  <Form.Control as="select" value={carreraPrincipal} onChange={(e) => {
+                    setCarreraPrincipal(e.target.value);
+                    validarCarreraPrincipal();
+                    }}
+                    isInvalid={errores.carreraPrincipal !== ''}>
+                    <option value="">Seleccione una carrera</option>
+                    {carreras.map(carrera => (
+                      <option key={carrera.ID} value={carrera.ID}>{carrera.NOM_CARRERA}</option>
+                    ))}
+                  </Form.Control>
+                  <Form.Control.Feedback type="invalid">*{errores.carreraSecundaria}o</Form.Control.Feedback> 
+                </Form.Group>
+              </Col>
+              <Col className="col-12 col-md-6">
+                <Form.Group controlId="formCarreraSecundaria">
+                  <Form.Label>Carrera Secundaria</Form.Label>
+                  <Form.Control as="select" value={carreraSecundaria} onChange={(e) =>
+                  {
+                    setCarreraSecundaria(e.target.value);
+                    validarCarreraSecundaria();
+                  }
+                  }
+                  isInvalid={errores.carreraSecundaria !== ''}>
+                    <option value="">Seleccione una carrera</option>
+                    {carreras.map(carrera => (
+                      <option key={carrera.ID} value={carrera.ID}>{carrera.NOM_CARRERA}</option>
+                    ))}
+                  </Form.Control>
+                  <Form.Control.Feedback type="invalid">*{errores.carreraSecundaria}</Form.Control.Feedback> 
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+                </Row>
+                <Row>
+                  <Col className="col-12">
+
                   <Form.Group controlId="formIdentidad">
-                    <Form.Label>Identidad</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Ingrese su número de identidad"
-                      value={identidad}
-                      onChange={(e) => setIdentidad(e.target.value)}
-                      isInvalid={identidadError} 
-                    />
-                    <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col className="col-12">
-                  <Form.Group controlId="formFotoCertificado">
-                    <Form.Label>Foto de Certificado de Secundaria</Form.Label>
-                    <Form.Control
-                      type="file"
-                      accept="image/png, image/jpeg"
-                      isInvalid={fotoCertificadoError}
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        const validExtensions = ['png', 'jpeg'];
-                        const fileExtension = file.name.split('.').pop().toLowerCase();
-                        if (!validExtensions.includes(fileExtension)) {
-                          alert('Solo se permiten archivos con extensión .png o .jpeg');
-                          e.target.value = null;
-                          return;
+                      <Form.Label>Identidad</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="Ingrese su número de identidad"
+                        value={identidad}
+                        onChange={(e) => {
+                          setIdentidad(e.target.value);
+                          validarIdentidad();
+                        }}
+                        isInvalid={errores.identidad !== ''} 
+                      />
+                      <Form.Control.Feedback type="invalid">*{errores.identidad}</Form.Control.Feedback> 
+                    </Form.Group>
+
+                    <Form.Group controlId="formFotoCertificado">
+                      <Form.Label>Foto de Certificado de Secundaria</Form.Label>
+                      <Form.Control
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        isInvalid={
+                          errores.fotoCertificado !== null
                         }
-                        setFotoCertificado(file);
-                      }}
-                    />
-                    <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col className="col-12 col-md-6">
-                  <Form.Group controlId="formTelefono">
-                    <Form.Label>Teléfono</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Ingrese su número de teléfono"
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value)}
-                      isInvalid={telefonoError} 
-                    />
-                    <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-                  </Form.Group>
-                </Col>
-                <Col className="col-12 col-md-6">
-                  <Form.Group controlId="formCorreo">
-                    <Form.Label>Correo Personal</Form.Label>
-                    <Form.Control
-                      type="email"
-                      placeholder="Ingrese su correo personal"
-                      value={correo}
-                      onChange={(e) => setCorreo(e.target.value)}
-                      isInvalid={correoError} 
-                    />
-                    <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col className="col-12">
-                  <Form.Group controlId="formCentroRegional">
-                    <Form.Label>Centro Regional</Form.Label>
-                    <Form.Control as="select" value={centroRegional} onChange={(e) => setCentroRegional(e.target.value)} isInvalid={centroRegionalError}>
-                      <option value="">Seleccione un centro regional</option>
-                      <option value="UNAH CU">UNAH CU</option>
-                      <option value="UNAH VS">UNAH VS</option>
-                      <option value="UNAH CURLA">UNAH CURLA</option>
-                      <option value="UNAH CURLP">UNAH CURLP</option>
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">*Este campo es obligatorio</Form.Control.Feedback> 
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Button variant="primary" type="submit">
-                Enviar Inscripción
-              </Button>
-            </Form>
-          </div>
-        </>
-  );
-};
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          const validExtensions = ['png', 'jpeg'];
+                          const fileExtension = file.name.split('.').pop().toLowerCase();
+                          if (!validExtensions.includes(fileExtension)) {
+                            alert('Solo se permiten archivos con extensión .png o .jpeg');
+                            e.target.value = null;
+                            return;
+                          }
+                          setFotoCertificado(file);
+
+                          validarFotoCertificado();
+                        }}
+                      />
+                      <Form.Control.Feedback type="invalid">*{errores.fotoCertificado}</Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="col-12">
+                    <Form.Group controlId="formDireccion">
+                      <Form.Label>Dirección</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Ingrese su dirección"
+                        value={direccion}
+                        onChange={(e) => {
+                          setDireccion(e.target.value);
+                          validarDireccion();
+                        }}
+                        isInvalid={errores.direccion !== ''} 
+                      />
+                      <Form.Control.Feedback type="invalid">*{errores.direccion}</Form.Control.Feedback> 
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="col-12 col-md-6">
+                    <Form.Group controlId="formTelefono">
+                      <Form.Label>Teléfono</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Ingrese su número de teléfono"
+                        value={telefono}
+                        onChange={(e) => {
+                          setTelefono(e.target.value);
+                          validarTelefono();
+                        }}
+                        isInvalid={errores.telefono !== ''} 
+                      />
+                      <Form.Control.Feedback type="invalid">*{errores.telefono}</Form.Control.Feedback> 
+                    </Form.Group>
+                  </Col>
+                  <Col className="col-12 col-md-6">
+                    <Form.Group controlId="formCorreo">
+                      <Form.Label>Correo Personal</Form.Label>
+                      <Form.Control
+                        type="email"
+                        placeholder="Ingrese su correo personal"
+                        value={correo}
+                        onChange={(e) => {
+                          setCorreo(e.target.value);
+                          validarCorreo();
+                        }}
+                        isInvalid={errores.correo !== ''} 
+                      />
+                      <Form.Control.Feedback type="invalid">*{errores.correo}</Form.Control.Feedback> 
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Button variant="primary" type="submit" onClick={handleSubmit}>
+                  Enviar Inscripción
+                </Button>
+              </Form>
+            </div>
+          </>
+    );
+  };
 
 
-export default InscripcionAspirantes;
+  export default InscripcionAspirantes;

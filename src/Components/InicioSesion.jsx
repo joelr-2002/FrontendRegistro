@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Row, Col } from 'react-bootstrap';
+import { Button, Form, Row, Col, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import NavbarComponente from './NavbarComponente';
 import Cookies from 'js-cookie';
@@ -16,32 +16,23 @@ const LoginComponent = () => {
     const [passwordValid, setPasswordValid] = useState(false);
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     //Revisa el rol guardado en la cookie para redirigir al usuario a la página correspondiente
     const [redirected, setRedirected] = useState(false);
     const rol = Cookies.get('user');
-if (!redirected) {
-    if (rol === 'estudiante') {
-        setRedirected(true);
-        window.location.href = '/estudiante';
-    } else if (rol === 'docente') {
-        setRedirected(true);
-        window.location.href = '/docente';
-    } else if (rol === 'Administrador') {
-        //Revisa en el header el token para saber si el usuario está autenticado
-            //hace un fetch con el bearer token en el header para saber si el token es válido
-            fetch(apiurl+'/maestros', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + Cookies.get('token')
-                }
-            }).then((res) => {
-                console.log(res.json());
-                //window.location.href = '/administrador';
-            })
-        
+
+    if (!redirected) {
+        if (rol === 'Estudiante') {
+            setRedirected(true);
+            window.location.href = '/estudiantes';
+        } else if (rol === 'Docente') {
+            setRedirected(true);
+            window.location.href = '/docentes';
+        } else if (rol === 'administrador') {
+            window.location.href = '/administrador'; 
+        }
     }
-}
 
     /**
      * Función que se ejecuta al enviar el formulario de inicio de sesión.
@@ -57,26 +48,46 @@ if (!redirected) {
         //Si email y password son válidos, se realiza la autenticación
         if (emailValid && passwordValid) {
             //Se realiza la petición
-            fetch(apiurl+'/login', {
+            setIsLoading(true);
+            fetch(apiurl+'/api/v1/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "correo" : email,
-                    "password" : password
+                    "username" : email,
+                    "contrasenia" : password
                 })
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    setIsLoading(false);
                     console.log(data);
-                    if (data.error === undefined) {
+                    if (data.mensaje === 'Se ha iniciado sesión exitosamente.') {
                         console.log('Usuario autenticado');
-                        Cookies.set('token', data.token);
-                        Cookies.set('user', data.rol);
+                        Cookies.set('x-token', data.token);
+                        Cookies.set('user', data.data.rol);
+                        const rol = Cookies.get('user');
+                        if (!redirected) {
+                            if (rol === 'Estudiante') {
+                                setRedirected(true);
+                                window.location.href = '/estudiantes';
+                            } else if (rol === 'Docente') {
+                                setRedirected(true);
+                                window.location.href = '/docentes';
+                            } else if (rol === 'administrador') {
+                                window.location.href = '/administrador'; 
+                            } else if (rol === 'Coordinador') {
+                                window.location.href = '/coordinador'; 
+                            } else if (rol === 'Jefe') {
+                                window.location.href = '/jefe-departamento'; 
+                            }
+                        }
                     }
                 })
-                .catch((err) => console.error(err));
+                .catch((err) =>{
+                    console.error(err)
+                    setIsLoading(false);});
         }
     };
 
@@ -121,7 +132,7 @@ if (!redirected) {
                 `}
             </style>
             <NavbarComponente />
-            <div className="login-container">
+            <div className="login-container" disabled={isLoading}>
                 <div className="login-content">
                     <Row className="mb-3">
                         <Col>
@@ -159,8 +170,8 @@ if (!redirected) {
 
                         <Row className="mb-3">
                             <Col>
-                                <Button variant="primary" type="submit">
-                                    Ingresar
+                                <Button variant="primary" type="submit" disabled={isLoading}>
+                                    {isLoading ? <Spinner animation="border" size="sm" /> : 'Ingresar'}
                                 </Button>
                             </Col>
                         </Row>

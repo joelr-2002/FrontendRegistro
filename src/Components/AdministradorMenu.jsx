@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { faChalkboardUser } from "@fortawesome/free-solid-svg-icons";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
-import { faRulerHorizontal } from "@fortawesome/free-solid-svg-icons";
-import { faFileCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { faBuildingColumns } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChalkboardUser,
+  faUsers,
+  faBuildingColumns,
+} from "@fortawesome/free-solid-svg-icons";
+
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 
 //Opciones Menú
@@ -63,28 +63,14 @@ const AdmMenu = () => {
             opcion="Docentes"
             ruta="/administrador/creacion-docente"
           />
+        </Row>
+        <Row>
           <OpcionesMenu
             icono={faUsers}
             opcion="Aspirantes"
-            ruta="/formulario-aspirantes"
+            ruta="/administrador/aspirantes"
           />
-        </Row>
-        <Row className="mb-3">
-          <OpcionesMenu
-            icono={faRulerHorizontal}
-            opcion="Planificación Académica"
-            ruta="/administrador/habilitar-notas"
-          />
-          <OpcionesMenu
-            icono={faFileCircleExclamation}
-            opcion="Cancelaciones Excepcionales"
-            ruta="/administrador/creacion-docente"
-          />
-          <OpcionesMenu
-            icono={faFileCircleCheck}
-            opcion="Notas"
-            ruta="/administrador/habilitar-notas"
-          />
+          <Col></Col>
         </Row>
       </div>
     </>
