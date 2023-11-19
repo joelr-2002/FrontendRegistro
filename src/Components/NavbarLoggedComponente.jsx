@@ -4,8 +4,9 @@ import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 
 
 function onLogout() {
-  Cookies.remove('token');
+  Cookies.remove('x-token');
   Cookies.remove('user');
+  Cookies.remove('nEmpleado');
   window.location.href = '/';
 }
 

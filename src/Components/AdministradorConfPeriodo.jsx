@@ -5,13 +5,20 @@ import "../Styles/index.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretUp, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
+
+import formatearFechas from '../utils/formatearFechas.js'
 
 //Componente fechas de periodo
 const Fechas = ({
   fechaFinalPlanificacionAcd,
-  duracionP,
+  opcionSeleccionada,
   setFechasValidadas,
+  setDatosFechas,
 }) => {
+  const [idPeriodo, setIDPeriodo] = useState("");
+  const [anioPeriodo, setAnioPeriodo] = useState("");
   const [fechaIPeriodoAcd, setFechaIPeriodoAcd] = useState("");
   const [fechaFPeriodoAcd, setFechaPeriodoAcd] = useState("");
   const [fechaIPlanificacionAcd, setFechaIPlanificacionAcd] = useState("");
@@ -23,6 +30,14 @@ const Fechas = ({
 
   const [fechasValidas, setFechasValidas] = useState(false); // Estado para rastrear la validación
   const [mensaje, setMensaje] = useState(""); // Estado para el mensaje
+
+  const handleIDPeriodoChange = (e) => {
+    setIDPeriodo(e);
+  };
+
+  const handleAnioPeriododChange = (e) => {
+    setAnioPeriodo(e);
+  };
 
   const handleFechaIPeriodoAcdChange = (e) => {
     setFechaIPeriodoAcd(e);
@@ -59,6 +74,8 @@ const Fechas = ({
   const handleValidarFechas = () => {
     // Verificar si hay campos vacíos
     if (
+      !idPeriodo ||
+      !anioPeriodo ||
       !fechaIPeriodoAcd ||
       !fechaFPeriodoAcd ||
       !fechaIPlanificacionAcd ||
@@ -72,8 +89,14 @@ const Fechas = ({
       setFechasValidas(false);
       return;
     }
-    /*Validación para que la fecha final siempre sea despues que la inicial*/
-    if (
+    const currentYear = new Date().getFullYear();
+
+    /*Validación que el año sea correcto */
+    if (anioPeriodo <= 0 || anioPeriodo < currentYear) {
+      setMensaje("El año del periodo es inválido");
+      setFechasValidas(false);
+    } else if (
+      /*Validación para que la fecha final siempre sea despues que la inicial*/
       new Date(fechaFPeriodoAcd) < new Date(fechaIPeriodoAcd) ||
       new Date(fechaFPlanificacionAcd) < new Date(fechaIPlanificacionAcd) ||
       new Date(fechaFIngresoNotas) < new Date(fechaIngresoNotas)
@@ -91,16 +114,16 @@ const Fechas = ({
     } else if (
       /*Validación para que la fecha final del periodo corrsponda con la solicitud, en este caso no se negará la validación si hay casos especiales*/
       /*Trimestral */
-      duracionP === 1 &&
+      opcionSeleccionada === 1 &&
       new Date(fechaFPeriodoAcd) - new Date(fechaIPeriodoAcd) <
         1000 * 60 * 60 * 24 * 90 // 90 días, 3 meses
     ) {
       setMensaje(
-        "Advertencia: El Periodo es Trimestral, por lo que debería de haber un margen de 3 meses minimos tentativos entre la fecha de inicio y fin"
+        "Advertencia: El Periodo es Trimestral, por lo que debería de haber un margen de 3 meses mínimos tentativos entre la fecha de inicio y fin"
       );
     } else if (
       /*Semestral */
-      duracionP === 2 &&
+      opcionSeleccionada === 2 &&
       new Date(fechaFPeriodoAcd) - new Date(fechaIPeriodoAcd) <
         1000 * 60 * 60 * 24 * 180 // 180 días, 6 meses
     ) {
@@ -149,6 +172,19 @@ const Fechas = ({
     }
 
     setFechasValidadas(fechasValidas);
+
+    setDatosFechas({
+      idPeriodo,
+      anioPeriodo,
+      fechaIPeriodoAcd,
+      fechaFPeriodoAcd,
+      fechaIPlanificacionAcd,
+      fechaFPlanificacionAcd,
+      fechaIngresoNotas,
+      fechaFIngresoNotas,
+      fechaICancelaciones,
+      fechaFCancelaciones,
+    });
   };
 
   return (
@@ -158,11 +194,29 @@ const Fechas = ({
           <Form.Group controlId="formPeriodo" style={{ padding: "10px" }}>
             <Form.Label>Periodo</Form.Label>
             <Form.Control
+              as="select"
               className="text-center"
               type="text"
-              value="IIIPAC"
-              readOnly
-            />
+              value={idPeriodo}
+              onChange={(e) => {
+                handleIDPeriodoChange(e.target.value);
+                setFechasValidadas(false);
+              }}
+            >
+              <option value="">Seleccione un Periodo</option>
+              {opcionSeleccionada === "1" ? (
+                <>
+                  <option value={"1"}>IPAC</option>
+                  <option value={"2"}>IIPAC</option>
+                  <option value={"3"}>IIIPAC</option>
+                </>
+              ) : opcionSeleccionada === "2" ? (
+                <>
+                  <option value={"1"}>IPAC</option>
+                  <option value={"2"}>IIPAC</option>
+                </>
+              ) : null}
+            </Form.Control>
           </Form.Group>
         </Col>
         <Col>
@@ -171,8 +225,11 @@ const Fechas = ({
             <Form.Control
               className="text-center"
               type="number"
-              value="2023"
-              readOnly
+              value={anioPeriodo}
+              onChange={(e) => {
+                handleAnioPeriododChange(e.target.value);
+                setFechasValidadas(false);
+              }}
             />
           </Form.Group>
         </Col>
@@ -323,6 +380,7 @@ const Fechas = ({
 function ConfMatricula({
   setFechaFinalPlanificacionAcd,
   setConfMatriculaValidada,
+  setConfMatriculaData,
 }) {
   const [opciones, setOpciones] = useState([
     {
@@ -440,8 +498,8 @@ function ConfMatricula({
       const nombre = opciones[i].nombre;
       const fechaInicioActual = new Date(opciones[i].fechaInicio);
       const fechaInicioAnterior = new Date(opciones[i - 1].fechaInicio);
-      const indiceMaximoActual=opciones[i].indiceMaximo;
-      const indiceMinimoAnterior=opciones[i-1].indiceMinimo;
+      const indiceMaximoActual = opciones[i].indiceMaximo;
+      const indiceMinimoAnterior = opciones[i - 1].indiceMinimo;
 
       if (fechaInicioActual <= fechaInicioAnterior) {
         setMensaje(
@@ -451,9 +509,8 @@ function ConfMatricula({
         setConfMatriculaValidada(confMatriculaValidar);
         return;
       }
-      if (nombre!=="Adiciones y Cancelaciones") {
-
-        if(indiceMaximoActual >= indiceMinimoAnterior){
+      if (nombre !== "Adiciones y Cancelaciones") {
+        if (indiceMaximoActual >= indiceMinimoAnterior) {
           setMensaje(
             "Verifica los indices, el indice maximo de una categoría no debe ser mayor que el indice minimo de la categoría anterior"
           );
@@ -461,7 +518,6 @@ function ConfMatricula({
           setConfMatriculaValidada(confMatriculaValidar);
           return;
         }
-        
       }
 
       if (
@@ -478,6 +534,7 @@ function ConfMatricula({
     setMensaje();
     setConfMatriculaValidar(true);
     setConfMatriculaValidada(confMatriculaValidar);
+    setConfMatriculaData(opciones);
   };
 
   const handleFechaInicioChange = (index, date) => {
@@ -660,10 +717,79 @@ function ConfMatricula({
 
 //Se acortará el nombre de Administrador a Adm para mayor facilidad
 const AdmConfPeriodo = () => {
+  //Datos del componente Fecha
+  const [datosFechas, setDatosFechas] = useState({
+    idPeriodo: "",
+    anioPeriodo: "",
+    fechaIPeriodoAcd: "",
+    fechaFPeriodoAcd: "",
+    fechaIPlanificacionAcd: "",
+    fechaFPlanificacionAcd: "",
+    fechaIngresoNotas: "",
+    fechaFIngresoNotas: "",
+    fechaICancelaciones: "",
+    fechaFCancelaciones: "",
+  });
+
+  //Datos del Componente ConfMatricula
+  const [opcionesConfMatricula, setOpcionesConfMatricula] = useState([]);
+
+  const handleConfMatriculaData = (opciones) => {
+    setOpcionesConfMatricula(opciones);
+  };
+
+  // useEffect(() => {});
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes agregar la lógica para enviar los datos a la API
-    // y manejar la respuesta (por ejemplo, mostrar un mensaje de éxito)
+    const matriculaData = opcionesConfMatricula.map((opcion) => ({
+      p_indice_inicio: opcion.indiceMinimo,
+      p_indice_final: opcion.indiceMaximo,
+      p_fecha_inicio: formatearFechas(opcion.fechaInicio),
+      p_fecha_final: formatearFechas(opcion.fechaCierre),
+      p_nombre: opcion.nombre,
+      p_periodo_periodo: datosFechas.idPeriodo,
+      p_periodo_anio: datosFechas.anioPeriodo,
+      p_periodo_duracion_id: opcionSeleccionada,
+    }));
+
+    const data = {
+      periodo: {
+        p_fec_nota_ini: formatearFechas(datosFechas.fechaIngresoNotas),
+        p_fec_nota_fin: formatearFechas(datosFechas.fechaFIngresoNotas),
+        p_periodo_periodo: formatearFechas(datosFechas.idPeriodo),
+        p_periodo_anio: formatearFechas(datosFechas.anioPeriodo),
+        p_periodo_duracion_id: opcionSeleccionada,
+        p_fec_ini_plan:formatearFechas( datosFechas.fechaIPlanificacionAcd),
+        p_fec_final_plan: formatearFechas(datosFechas.fechaFPlanificacionAcd),
+        p_fec_can_exp_ini: formatearFechas(datosFechas.fechaICancelaciones),
+        p_fec_can_exp_fin: formatearFechas(datosFechas.fechaFCancelaciones),
+        p_fec_periodo_ini: formatearFechas(datosFechas.fechaIPeriodoAcd),
+        p_fec_periodo_fin: formatearFechas(datosFechas.fechaFPeriodoAcd),
+      },
+      matricula: matriculaData,
+    };
+
+    // Convierte los datos a formato JSON
+    const jsonData = JSON.stringify(data);
+    console.log(data);
+    console.log(jsonData);
+
+    fetch(apiurl + "/api/v1/admin/configuracion-periodo", {
+      method: "POST",
+      headers: {
+        "x-token": "bearer " + Cookies.get("x-token"),
+        "Content-Type": "application/json",
+      },
+      body: jsonData,
+    })
+      .then((response) => response.json())
+      .then((data) => {console.log(data)
+        alert("Formulario no enviado");})
+      .catch((err) => {
+        console.error(err);
+
+        alert("Formulario  enviado" +err);
+      });
   };
 
   const [opcionSeleccionada, setOpcionSeleccionada] = useState(""); // Estado para almacenar la opción seleccionada
@@ -729,19 +855,24 @@ const AdmConfPeriodo = () => {
                 fechaFinalPlanificacionAcd={fechaFinalPlanificacionAcd}
                 opcionSeleccionada={opcionSeleccionada}
                 setFechasValidadas={setFechasValidadas}
+                setDatosFechas={setDatosFechas}
               />
 
               <ConfMatricula
                 setFechaFinalPlanificacionAcd={setFechaFinalPlanificacionAcd}
                 setConfMatriculaValidada={setConfMatriculaValidada}
+                setConfMatriculaData={handleConfMatriculaData}
               />
 
-              <button
+              <Button
+                variant="primary"
+                type="submit"
+                style={{ width: "200px" }}
                 onClick={handleSubmit}
                 disabled={!fechasValidadas || !confMatriculaValidada}
               >
                 Enviar
-              </button>
+              </Button>
             </div>
           )}
 
@@ -751,18 +882,23 @@ const AdmConfPeriodo = () => {
                 fechaFinalPlanificacionAcd={fechaFinalPlanificacionAcd}
                 opcionSeleccionada={opcionSeleccionada}
                 setFechasValidadas={setFechasValidadas}
+                setDatosFechas={setDatosFechas}
               />
               <ConfMatricula
                 setFechaFinalPlanificacionAcd={setFechaFinalPlanificacionAcd}
                 setConfMatriculaValidada={setConfMatriculaValidada}
+                setConfMatriculaData={handleConfMatriculaData}
               />
 
-              <button
+              <Button
+                variant="primary"
+                type="submit"
+                style={{ width: "200px" }}
                 onClick={handleSubmit}
                 disabled={!fechasValidadas || !confMatriculaValidada}
               >
                 Enviar
-              </button>
+              </Button>
             </div>
           )}
         </div>

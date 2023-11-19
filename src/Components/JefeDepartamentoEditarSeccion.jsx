@@ -1,6 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
+import { Modal, Button, Form } from "react-bootstrap";
 
 export const JefeDepartamentoEditarSeccion = () => {
   const location = useLocation();
@@ -9,14 +12,26 @@ export const JefeDepartamentoEditarSeccion = () => {
   const [editarCupos, setEditarCupos] = useState({});
   const [cuposActuales, setCuposActuales] = useState({});
 
+  const [showModal, setShowModal] = useState(false);
+  const [justificacion, setJustificacion] = useState('');
+  const [seccionAEliminar, setSeccionAEliminar] = useState(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [password, setPassword] = useState('');
+
+  console.log(clase);
+
   const mostrarSecciones = () => {
-    fetch(`http://localhost:8081/seccionesDisponibles/${clase.id_clase}`)
+    fetch(apiurl + "/api/v1/secciones/?codAsig=" + clase,{
+      headers: {
+        "x-token": "bearer " + Cookies.get("x-token"),
+    }
+  })
       .then((response) => response.json())
       .then((data) => {
-        setSecciones(data);
+        setSecciones(data.data);
         const cuposIniciales = {};
-        data.forEach((seccion) => {
-          cuposIniciales[seccion.id_seccion] = seccion.numero_cupos;
+        data.data.forEach((seccion) => {
+          cuposIniciales[seccion.ID] = seccion.CUPOS;
         });
         setCuposActuales(cuposIniciales);
       })
@@ -36,15 +51,25 @@ export const JefeDepartamentoEditarSeccion = () => {
 
   const acualizarCupos = async (id) => {
     try {
-      const url = `http://localhost:8081/actualizar-cupos/${id}`;
+      const url = apiurl + '/api/v1/secciones/aumentar-cupos';
+
+      if(cuposActuales[id] < secciones[id].MATRICULADOS){
+        alert("No se puede disminuir más el número de cupos, ya que hay estudiantes matriculados en la sección");
+        return;
+      }
 
       const data = {
-        cupos: cuposActuales[id],
+        cupos: parseInt(cuposActuales[id]),
+        seccion: id,
       };
+
+      console.log(data);
+
       const response = await fetch(url, {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-token": "bearer " + Cookies.get("x-token"),
         },
         body: JSON.stringify(data),
       });
@@ -58,6 +83,79 @@ export const JefeDepartamentoEditarSeccion = () => {
       console.log("Error:", error);
     }
   };
+
+  const handleEliminarSeccion = (seccion) => {
+    setSeccionAEliminar(seccion);
+    setShowModal(true);
+  };
+
+const confirmarEliminarSeccion = async () => {
+  if (!justificacion) {
+    alert("Por favor, escriba una justificación para eliminar la sección");
+    setShowPasswordModal(false);
+    setShowModal(true);
+    return;
+  }
+
+  if (!password) {
+    alert("Por favor, escriba su contraseña para eliminar la sección");
+    return;
+  }
+
+  try {
+    const loginUrl = apiurl + '/api/v1/login';
+
+    const loginData = {
+      username: Cookies.get("nEmpleado"),
+      contrasenia: password,
+    };
+
+    const loginResponse = await fetch(loginUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    });
+
+    const loginResult = await loginResponse.json();
+
+    if (loginResult.mensaje === 'Se ha iniciado sesión exitosamente.') {
+      const deleteUrl = apiurl + '/api/v1/secciones/cancelar-seccion';
+      const deleteData = {
+        idSeccion: seccionAEliminar.ID,
+        justificacion: justificacion,
+      };
+
+      console.log(deleteData);
+
+      const deleteResponse = await fetch(deleteUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-token": "bearer " + Cookies.get("x-token"),
+        },
+        body: JSON.stringify(deleteData),
+      });
+
+      if (deleteResponse.ok) {
+        mostrarSecciones();
+      } else {
+        console.log("Error al actualizar los cupos");
+      }
+    } else {
+      alert("Contraseña incorrecta");
+      return;
+    }
+  } catch (error) {
+    console.log("Error:", error);
+    alert("Error al eliminar la sección");
+  }
+
+  setShowPasswordModal(false);
+  setShowModal(false);
+};
+
 
   const regresar = () => {
     window.history.back();
@@ -82,49 +180,51 @@ export const JefeDepartamentoEditarSeccion = () => {
                     <th scope="col">Aula</th>
                     <th scope="col">Hi</th>
                     <th scope="col">Hf</th>
-                    <th scope="col">Matricula</th>
+                    <th scope="col">Matriculados | Cupos
+                    </th>
                     <th scope="col">Lista de espera</th>
                     <th scope="col">Editar Cupos</th>
+                    <th scope="col">Eliminar Sección</th>
                   </tr>
                 </thead>
                 <tbody>
                   {secciones?.map((seccion) => (
-                    <tr key={seccion.id_seccion}>
-                      <td scope="row">{seccion.id_seccion}</td>
+                    <tr key={seccion.ID}>
+                      <td scope="row">{seccion.SECCION}</td>
                       <td scope="row">
-                        {seccion.nombres} {seccion.apellidos}
+                        {seccion.DOCENTE}
                       </td>
-                      <td scope="row">{seccion.nombre_edificio}</td>
-                      <td scope="row">{seccion.num_aula}</td>
-                      <td scope="row">{seccion.horainicio}</td>
-                      <td scope="row">{seccion.horafin}</td>
+                      <td scope="row">{seccion.EDIFICIO}</td>
+                      <td scope="row">{seccion.AULA}</td>
+                      <td scope="row">{seccion.HORA_INICIO}</td>
+                      <td scope="row">{seccion.HORA_FINAL}</td>
                       <td scope="row">
-                        {editarCupos[seccion.id_seccion] ? (
+                        {editarCupos[seccion.ID] ? (
                           <input
                             type="number"
-                            value={cuposActuales[seccion.id_seccion]}
+                            value={cuposActuales[seccion.ID]}
                             onChange={(e) =>
                               setCuposActuales((prev) => ({
                                 ...prev,
-                                [seccion.id_seccion]: e.target.value,
+                                [seccion.ID]: e.target.value,
                               }))
                             }
                           />
                         ) : (
-                          `${seccion.numero_estudiantes_matriculados}/${seccion.numero_cupos}`
+                          `${seccion.MATRICULADOS}/${seccion.CUPOS}`
                         )}
                       </td>
                       <td scope="row">
-                        {seccion.numero_estudiantes_lista_espera}
+                        {seccion.LISTA_ESPERA}
                       </td>
                       <td scope="row">
-                        {!editarCupos[seccion.id_seccion] ? (
+                        {!editarCupos[seccion.ID] ? (
                           <button
-                            className="btn btn-success btn-w"
+                            className="btn btn-secciones"
                             onClick={() =>
                               handleEditarCupos(
-                                seccion.id_seccion,
-                                seccion.numero_cupos
+                                seccion.ID,
+                                seccion.CUPOS
                               )
                             }
                           >
@@ -135,9 +235,9 @@ export const JefeDepartamentoEditarSeccion = () => {
                             <div className="row">
                               <div className="col-6">
                                 <button
-                                  className="btn btn-success "
+                                  className="btn btn-secciones "
                                   onClick={() =>
-                                    acualizarCupos(seccion.id_seccion)
+                                    acualizarCupos(seccion.ID)
                                   }
                                 >
                                   Guardar
@@ -145,11 +245,11 @@ export const JefeDepartamentoEditarSeccion = () => {
                               </div>
                               <div className="col-6">
                                 <button
-                                  className="btn btn-success "
+                                  className="btn btn-secciones-danger btn-w "
                                   onClick={() =>
                                     setEditarCupos((prev) => ({
                                       ...prev,
-                                      [seccion.id_seccion]: false,
+                                      [seccion.ID]: false,
                                     }))
                                   }
                                 >
@@ -160,10 +260,67 @@ export const JefeDepartamentoEditarSeccion = () => {
                           </>
                         )}
                       </td>
+                      <td scope="row">
+                        <button
+                          className="btn btn-secciones-danger btn-w"
+                          onClick={() => handleEliminarSeccion(seccion)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Modal para confirmar la eliminación */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Por favor, escribe una justificación para eliminar la sección:</p>
+          <Form.Control
+            as="textarea"
+            rows="4"
+            value={justificacion}
+            onChange={(e) => setJustificacion(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => {setShowPasswordModal(true); setShowModal(false)}}>
+            Siguiente
+          </Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal para ingresar la contraseña */}
+      <Modal show={showPasswordModal} onHide={() => setShowPasswordModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar con contraseña</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Ingresa tu contraseña para confirmar la eliminación:</p>
+          <Form.Control
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={confirmarEliminarSeccion}>
+            Confirmar Eliminación
+          </Button>
+          <Button variant="secondary" onClick={() => setShowPasswordModal(false)}>
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
             </div>
           </div>
         </div>

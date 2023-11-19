@@ -6,6 +6,7 @@ import { useFetchs } from "../utils/JefeDepartamento/useFetchs";
 import { useNavigate } from "react-router-dom";
 import apiurl from "../utils/apiurl";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import Cookies from "js-cookie";
 
 const FormularioCrearClases = () => {
   const [centro, setCentro] = useState([]);
@@ -16,7 +17,6 @@ const FormularioCrearClases = () => {
   const [horaInicial, setHoraInicial] = useState("00");
   const [minutosInicial, setMinutosInicial] = useState("00");
   const [horaFinal, setHoraFinal] = useState("00");
-  const [minutosFinal, setMinutosFinal] = useState("00");
   const [docente, setDocente] = useState([]);
   const [selectedClase, setSelectedClase] = useState("");
   const [selectedEdificio, setselectedEdificio] = useState("");
@@ -24,373 +24,174 @@ const FormularioCrearClases = () => {
   const [cuposDisponibles, setCuposDisponibles] = useState("");
   const [selectedDocente, setSelectedDocente] = useState("");
   const [aulas, setAulas] = useState([]);
-  const [docenteLibre, setDocenteLibre] = useState(false);
   const [anioPeriodo, setAnioPeriodo] = useState([]);
   const [error,setError] = useState(false);
   
+  const [clases, setClases] = useState([]);
+  const [edificios, setEdificios] = useState([]);
+  const [secciones, setSecciones] = useState([]);
+  const [duracion, setDuracion] = useState("");
 
-  const { edificios, clases, docentes } = useFetchs(
-    docente[0]?.carrera,
-    centro[0]?.nombre_centro
-  );
+  const [checkboxLunes, setCheckboxLunes] = useState(false);
+  const [checkboxMartes, setCheckboxMartes] = useState(false);
+  const [checkboxMiercoles, setCheckboxMiercoles] = useState(false);
+  const [checkboxJueves, setCheckboxJueves] = useState(false);
+  const [checkboxViernes, setCheckboxViernes] = useState(false);
+  const [checkboxSabado, setCheckboxSabado] = useState(false);
+  const [checkboxDomingo, setCheckboxDomingo] = useState(false);
 
+  const [lunes, setLunes] = useState("");
+  const [martes, setMartes] = useState("");
+  const [miercoles, setMiercoles] = useState("");
+  const [jueves, setJueves] = useState("");
+  const [viernes, setViernes] = useState("");
+  const [sabado, setSabado] = useState("");
+  const [domingo, setDomingo] = useState("");
 
+  //fetch para asignaturas
   useEffect(() => {
-    const fetchProcesoCarga = async () => {
+    const fetchClases = async () => {
       try {
-        const response = await fetch(
-          apiurl + "/api/v1/periodo-actual"
-        );
-        if (!response.ok) {
-          throw new Error("Error al obtener los datos");
+        const response = await fetch(apiurl + "/api/v1/asignaturas",{
+          headers: {
+            "x-token": "bearer " + Cookies.get("x-token"),
+          },
         }
-        const jsonData = await response.json();
-        setAnioPeriodo(jsonData);
-      } catch (error) {
-        console.error("Error al obtener los datos:", error);
-      }
-    };
-    fetchProcesoCarga();
-  }, []);
-
-  useEffect(() => {
-    const id = localStorage.getItem("id");
-    const fetchDocente = async () => {
-      try {
-        const response = await fetch(`http://localhost:8081/docente/${id}`);
-        const jsonData = await response.json();
-
-        setDocente(jsonData);
-      } catch (error) {
-        console.error("Error al obtener los datos del docente:", error);
-      }
-    };
-
-    fetchDocente();
-  }, []);
-
-
-  useEffect(() => {
-    const id = localStorage.getItem("id");
-
-    const fetchDocente = async () => {
-      try {
-        const response = await fetch(`http://localhost:8081/carrerById/${id}`);
-        const jsonData = await response.json();
-        setCentro(jsonData);
-      } catch (error) {
-        console.error("Error al obtener la carrera del docente:", error);
-      }
-    };
-
-    fetchDocente();
-  }, []);
-
-  const traerAulas = async () => {
-    const diasC = checkboxValues.join("");
-    try {
-      const response = await fetch(
-        `http://localhost:8081/consulta-aula?id_edificio=${parseInt(
-          selectedEdificio
-        )}&horainicio=${horaInicial}:${minutosInicial}&horafin=${horaFinal}:${minutosFinal}&dias=${diasC}`
-      );
-      const jsonData = await response.json();
-
-      setAulas(jsonData);
-    } catch (error) {
-      console.error("Error al obtener los datos del docente:", error);
-    }
-  };
-  const verificarDocente = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8081/verificarHorarioDocente?num_empleado=${parseInt(
-          selectedDocente
-        )}&horaInicial=${horaInicial}&minutoInicial=${minutosInicial}&horaFinal=${horaFinal}&minutoFinal=${minutosFinal}`
-      );
-      const jsonData = await response.json();
-
-      setDocenteLibre(jsonData);
-      // console.log(jsonData)
-    } catch (error) {
-      console.error("Error al obtener los datos del docente:", error);
-    }
-  };
-
-  useEffect(() => {
-    traerAulas();
-  }, [
-    selectedEdificio,
-    ,
-    horaInicial,
-    minutosInicial,
-    horaFinal,
-    minutosFinal,
-    checkboxValues,
-  ]);
-
-  useEffect(() => {
-    verificarDocente();
-  }, [horaInicial, minutosInicial, horaFinal, minutosFinal, selectedDocente]);
-
-  const buscarClasePorId = (clasesArray, idClase) => {
-    return clasesArray.find((clase) => clase.id_clase === parseInt(idClase));
-  };
-  // Valida que las horas coincidan con las UV
-  const validarHorario = () => {
-    const temp = buscarClasePorId(clases, selectedClase);
-    const unidadesValorativas = temp?.unidades_valo;
-
-    const horasInicio = parseInt(horaInicial, 10);
-    const minutosInicio = parseInt(minutosInicial, 10);
-    const horasFin = parseInt(horaFinal, 10);
-    const minutosFin = parseInt(minutosFinal, 10);
-
-    const duracionHoras = horasFin - horasInicio;
-    const duracionMinutos = minutosFin - minutosInicio;
-    const duracionTotal = duracionHoras * 60 + duracionMinutos;
-
-    if (duracionTotal !== unidadesValorativas * 60) {
-      return false;
-    }
-    if (duracionTotal === unidadesValorativas * 60) {
-      return true;
-    }
-  };
-  // valida que las UV cocidan con los dias
-  const validarUV = () => {
-    const temp = buscarClasePorId(clases, selectedClase);
-    const unidadesValorativas = temp?.unidades_valo;
-    const diasSeleccionados = checkboxValues.length;
-    if (unidadesValorativas == diasSeleccionados) {
-      return true;
-    }
-    if (unidadesValorativas !== diasSeleccionados) {
-      return false;
-    }
-  };
-
-  const validarDiasUV = () => {
-    const diasSeleccionados = checkboxValues.length;
-    const temp = buscarClasePorId(clases, selectedClase);
-    if (diasSeleccionados === 1) {
-      if (!validarHorario()) {
-        setError(true)
-        alert(
-          `La clase seleccionada debe ser impartida ${temp?.unidades_valo} horas a la semana `
         );
+        const responseJSON = await response.json();
+        setClases(responseJSON.data);
+      } catch (error) {
+        console.log("Error: " + error);
       }
-    } else {
-      if (diasSeleccionados > 1) {
-        if (!validarUV()) {
-          setError(true)
-          alert(
-            `La clase seleccionada debe ser impartida ${temp?.unidades_valo} horas a la semana`
-          );
-        }
+    };
+    fetchClases();
+  }, []);
+  
+  //fetch para docentes
+  useEffect(() => {
+    const fetchDocentes = async () => {
+      try {
+        const response = await fetch(apiurl + "/api/v1/docentes",{
+          headers: {
+            "x-token": "bearer " + Cookies.get("x-token"),
+          },
+        });
+        const responseJSON = await response.json();
+        setDocente(responseJSON.data);
+      } catch (error) {
+        console.log("Error: " + error);
       }
+    };
+    fetchDocentes();
+  }, []);
+
+  //fetch para Edificios
+  useEffect(() => {
+    const fetchEdificios = async () => {
+      try {
+        const response = await fetch(apiurl + "/api/v1/edificios",{
+          headers: {
+            "x-token": "bearer " + Cookies.get("x-token"),
+          },
+        });
+        const responseJSON = await response.json();
+        setEdificios(responseJSON.data);
+      } catch (error) {
+        console.log("Error: " + error);
+      }
+    };
+    fetchEdificios();
+  }, []);
+
+  //fetch para Aula por edificio
+  const obtenerAulasEdificio = async (e) => {
+    try {
+      const response = await fetch(apiurl + "/api/v1/aulas/?edificio=" + e,{
+        headers: {
+          "x-token": "bearer " + Cookies.get("x-token"),
+        },
+      });
+      const responseJSON = await response.json();
+      setAulas(responseJSON.data);
+    } catch (error) {
+      console.log("Error: " + error);
     }
   };
-
-  function validarHorasUnidades(horaInicio, horaFin, unidadesValorativas) {
-    const horaInicioParts = horaInicio.split(":");
-    const horaFinParts = horaFin.split(":");
-    const horaInicioNum = parseInt(horaInicioParts[0]);
-    const minutoInicioNum = parseInt(horaInicioParts[1]);
-    const horaFinNum = parseInt(horaFinParts[0]);
-    const minutoFinNum = parseInt(horaFinParts[1]);
-    const horasDiferencia = horaFinNum - horaInicioNum;
-    const minutosDiferencia = minutoFinNum - minutoInicioNum;
-    const duracionTotal = horasDiferencia + minutosDiferencia / 60;
-    return duracionTotal === unidadesValorativas;
-  }
-  const formatearFecha = (fechaISO) => {
-    const fecha = new Date(fechaISO);
-
-    const anio = fecha.getFullYear();
-    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-    const dia = String(fecha.getDate()).padStart(2, "0");
-
-    const hora = String(fecha.getHours()).padStart(2, "0");
-    const minutos = String(fecha.getMinutes()).padStart(2, "0");
-    const segundos = String(fecha.getSeconds()).padStart(2, "0");
-
-    return `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`;
-  };
-
-  const buscarDocentePorId = (docentesArray, idDocente) => {
-    return docentesArray.find((docente_) => docente_.num_empleado === parseInt(idDocente));
-  };
-
-
 
   const Guardar = () => {
-    const horaInicio = parseInt(horaInicial, 10);
-    const minutosInicio = parseInt(minutosInicial, 10);
-    const horaFin = parseInt(horaFinal, 10);
-    const minutosFin = parseInt(minutosFinal, 10);
-
-    if (
-      horaInicio > horaFin ||
-      (horaInicio === horaFin && minutosInicio >= minutosFin)
-    ) {
-      alert("La hora de inicio debe ser menor que la hora final.");
-    }
-    validarDiasUV();
-    verificarDocente();
-    traerAulas();
-
-    const fechaFormateada = formatearFecha(anioPeriodo[0]?.anio);
-
-    const diasC = checkboxValues.join("");
-    const temp = buscarClasePorId(clases, selectedClase);
-    const unidadesValorativas = temp?.unidades_valo;
-    const unidadesDocente = buscarDocentePorId(docentes,selectedDocente)
-    console.log(unidadesDocente)
-    const formData = {
-      id_clase: parseInt(selectedClase),
-      num_empleado: parseInt(selectedDocente),
-      id_aula: parseInt(selectedAula),
-      dias: diasC, //[dias]
-      cupos: parseInt(cuposDisponibles),
-      id_edificio: parseInt(selectedEdificio),
-      horainicio: `${horaInicial}:${minutosInicial}`,
-      horafin: `${horaFinal}:${minutosFinal}`,
-      anio: fechaFormateada,
-      periodo: anioPeriodo[0]?.periodo,
-      unidades_valo: unidadesValorativas,
+    
+    const data = {
+      "asignatura_cod": selectedClase,
+      "docente_n_empleado": selectedDocente,
+      "lunes": lunes,
+      "martes": martes,
+      "miercoles": miercoles,
+      "jueves": jueves,
+      "viernes": viernes,
+      "sabado": sabado,
+      "domingo": domingo,
+      "hora_entrada": horaInicial,
+      "hora_salida": horaFinal,
+      "aula_id": selectedAula,
+      "cupos": cuposDisponibles,
+      "duracion": duracion
     };
 
-    // console.log(formData);
+    console.log(data);
 
-    if (validarDatos(formData)) {
-      if (checkboxValues.length == 1) {
-        if (!docenteLibre.hasData) {
-          if(unidadesValorativas <= unidadesDocente.unidades_valo){
-            const UV = clases.find((clase) => clase.id_clase === selectedClase);
-            if (validarHorasUnidades(formData.horainicio, formData.horafin, 3)) {
-              if(error){
-                try {
-                  fetch("http://localhost:8081/seccion-insertar", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      alert("Sección creada con éxito");
-                      navigate('/docente/home');
-                      setHoraInicial("00");
-                      setMinutosInicial("00");
-                      setHoraFinal("00");
-                      setMinutosFinal("00");
-                      setSelectedClase("");
-                      setselectedEdificio("");
-                      setSelectedAula("");
-                      setCuposDisponibles("");
-                      setSelectedDocente("");
-                      setCheckboxValues([]);
-                      setError(false)
-                    })
-                    .catch((error) => {
-                      console.error("Error al crear la sección:", error);
-                    });
-                } catch (e) {
-                  console.log(e);
-                }
-              }
-            } else {
-              alert(
-                "La unidades valorativas deben coincidir con las horas de la clase"
-              );
-            }
-          }else{
-            alert('El docente no tiene unidades valorativas disponibles')
-          }
-        } else {
-          alert("El docente tiene una sección a esta hora");
-        }
-      }
-
-      if (checkboxValues.length > 1) {
-        if (!docenteLibre.hasData) {
-          if(unidadesValorativas <= unidadesDocente.unidades_valo){
-           if(error){
-            try {
-              fetch("http://localhost:8081/seccion-insertar", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  alert("Sección creada con éxito");
-                  navigate('/docente/home');
-                  setHoraInicial("00");
-                  setMinutosInicial("00");
-                  setHoraFinal("00");
-                  setMinutosFinal("00");
-                  setSelectedClase("");
-                  setselectedEdificio("");
-                  setSelectedAula("");
-                  setCuposDisponibles("");
-                  setSelectedDocente("");
-                  setCheckboxValues([]);
-                })
-                .catch((error) => {
-                  console.error("Error al crear la sección:", error);
-                });
-            } catch (e) {
-              console.log(e);
-            }
-           }
-          }else{
-            alert('El docente no tiene unidades valorativas disponibles')
-          }
-        } else {
-          alert("El docente tiene una sección a esta hora");
-        }
-      }
-    } else {
-      console.log("No enviar");
-    }
   };
+
   const regresar = () => {
     window.history.back();
   };
 
-  function validarDatos(formData) {
-    if (
-      isNaN(formData.id_clase) ||
-      isNaN(formData.num_empleado) ||
-      isNaN(formData.id_edificio) ||
-      isNaN(formData.id_aula) ||
-      isNaN(formData.cupos) ||
-      typeof formData.dias !== "string" ||
-      typeof formData.horainicio !== "string" ||
-      typeof formData.horafin !== "string" ||
-      typeof formData.anio !== "string" ||
-      typeof formData.periodo !== "string"
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  // Funciones nuevas
   const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    if (checked) {
-      setCheckboxValues((prevSelectedDays) => [...prevSelectedDays, value]);
-    } else {
-      setCheckboxValues((prevSelectedDays) =>
-        prevSelectedDays.filter((day) => day !== value)
-      );
+    if (checkboxLunes){
+      setLunes("1");
+    } else if (!checkboxLunes){
+      setLunes("0");
+    }
+
+    if (checkboxMartes){
+      setMartes("1");
+    }
+    else if (!checkboxMartes){
+      setMartes("0");
+    }
+
+    if (checkboxMiercoles){
+      setMiercoles("1");
+    }
+    else if (!checkboxMiercoles){
+      setMiercoles("0");
+    }
+
+    if (checkboxJueves){
+      setJueves("1");
+    }
+    else if (!checkboxJueves){
+      setJueves("0");
+    }
+
+    if (checkboxViernes){
+      setViernes("1");
+    }
+    else if (!checkboxViernes){
+      setViernes("0");
+    }
+
+    if (checkboxSabado){
+      setSabado("1");
+    }
+    else if (!checkboxSabado){
+      setSabado("0");
+    }
+
+    if (checkboxDomingo){
+      setDomingo("1");
+    }
+    else if (!checkboxDomingo){
+      setDomingo("0");
     }
   };
 
@@ -411,7 +212,7 @@ const FormularioCrearClases = () => {
 
   const handleSelectCupos = (event) => {
     const nuevoCupo = parseInt(event.target.value, 10);
-    if (nuevoCupo >= 0 && nuevoCupo <= 50) {
+    if (nuevoCupo >= 0 && nuevoCupo <= 40) {
       setCuposDisponibles(nuevoCupo);
     } else {
       console.log("Solo se permite un máximo de 50 cupos");
@@ -462,13 +263,8 @@ const FormularioCrearClases = () => {
                           >
                             <option value="">Seleccione una clase</option>
                             {clases?.map((data, index) => (
-                              <option key={index} value={data.id_clase}>
-                                {data.codigo +
-                                  " - " +
-                                  "UV= " +
-                                  data.unidades_valo +
-                                  " " +
-                                  data.nombre_clase}
+                              <option key={index} value={data.COD}>
+                                {data.COD + " - " + data.NOMBRE}
                               </option>
                             ))}
                           </select>
@@ -489,16 +285,9 @@ const FormularioCrearClases = () => {
                             className=" form-control w-75"
                           >
                             <option value="">Seleccione un docente</option>
-                            {docentes.map((data, index) => (
-                              <option key={index} value={data.num_empleado}>
-                                {"No. emp: " +
-                                  data.num_empleado +
-                                  " - " +
-                                  data.nombres +
-                                  " " +
-                                  data.apellidos +
-                                  " - UV= " +
-                                  data.unidades_valo}
+                            {docente.map((data, index) => (
+                              <option key={index} value={data.N_EMPLEADO}>
+                                {data.NOMBRE}
                               </option>
                             ))}
                           </select>
@@ -529,7 +318,10 @@ const FormularioCrearClases = () => {
                               className="form-check-input"
                               name="Lunes"
                               checked={checkboxValues.includes("Lunes")}
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxLunes(!checkboxLunes);
+                              }}
                               value="Lunes"
                             />
                             <label className="form-check-label mx-2">
@@ -543,7 +335,10 @@ const FormularioCrearClases = () => {
                               name="Martes"
                               value="Martes"
                               checked={checkboxValues.includes("Martes")}
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxMartes(!checkboxMartes);
+                              }}
                             />
                             <label className="form-check-label mx-2">
                               Martes
@@ -556,7 +351,10 @@ const FormularioCrearClases = () => {
                               name="Miercoles"
                               value="Miercoles"
                               checked={checkboxValues.includes("Miercoles")}
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxMartes(!checkboxMiercoles);
+                              }}
                             />
                             <label className="form-check-label mx-2">
                               Miércoles
@@ -571,7 +369,10 @@ const FormularioCrearClases = () => {
                               checked={
                                 checkboxValues.includes("Jueves") || false
                               }
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxMartes(!checkboxJueves);
+                              }}
                             />
                             <label className="form-check-label mx-2">
                               Jueves
@@ -584,7 +385,10 @@ const FormularioCrearClases = () => {
                               name="Viernes"
                               value="Viernes"
                               checked={checkboxValues.includes("Viernes")}
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxMartes(!checkboxViernes);
+                              }}
                             />
                             <label className="form-check-label mx-2">
                               Viernes
@@ -597,7 +401,10 @@ const FormularioCrearClases = () => {
                               name="Sabado"
                               value="Sabado"
                               checked={checkboxValues.includes("Sabado")}
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxMartes(!checkboxSabado);
+                              }}
                             />
                             <label className="form-check-label mx-2">
                               Sábado
@@ -610,7 +417,10 @@ const FormularioCrearClases = () => {
                               name="Domingo"
                               value="Domingo"
                               checked={checkboxValues.includes("Domingo")}
-                              onChange={handleCheckboxChange}
+                              onChange={(e) => {
+                                handleCheckboxChange(e);
+                                setCheckboxMartes(!checkboxDomingo);
+                              }}
                             />
                             <label className="form-check-label mx-2">
                               Domingo
@@ -642,29 +452,6 @@ const FormularioCrearClases = () => {
                         </div>
 
                         <div className="col-3 d-flex justify-content-center py-2">
-                          Minutos Inicio:
-                        </div>
-
-                        <div className="col-3">
-                          <select
-                            value={minutosInicial}
-                            onChange={(e) => setMinutosInicial(e.target.value)}
-                            className="form-control"
-                          >
-                            {minutos.map((minuto) => (
-                              <option key={minuto} value={minuto}>
-                                {minuto}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div className="row">
-                        <div className="col-3 d-flex justify-content-center py-2">
                           Hora Final:
                         </div>
                         <div className="col-3">
@@ -681,22 +468,28 @@ const FormularioCrearClases = () => {
                             ))}
                           </select>
                         </div>
-                        <div className="col-3 d-flex justify-content-center py-2">
-                          Minutos Final:
-                        </div>
-                        <div className="col-3">
-                          <select
-                            value={minutosFinal}
-                            onChange={(e) => setMinutosFinal(e.target.value)}
-                            className="form-control"
-                          >
-                            {minutos.map((minuto) => (
-                              <option key={minuto} value={minuto}>
-                                {minuto}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div className="row">
+                      <div className="col-6 d-flex justify-content-center py-2">
+                          Duración:
+                      </div>
+
+                      <div className="col-6">
+                        <select
+                          value={duracion}
+                          onChange={(e) => setDuracion(e.target.value)}
+                          className="form-control"
+                        >
+                          <option value="">Seleccione Duración de Clase</option>
+                          <option value="1">Trimestral</option>
+                          <option value="2">Semestral</option>
+                        </select>
+                      </div>
                       </div>
                     </td>
                   </tr>
@@ -722,13 +515,16 @@ const FormularioCrearClases = () => {
                         <div className="col-6">
                           <select
                             value={selectedEdificio}
-                            onChange={handleSelectEdificio}
+                            onChange={(e) => {
+                              handleSelectEdificio(e);
+                              obtenerAulasEdificio(e.target.value);
+                            }}
                             className=" form-control w-75"
                           >
                             <option value="">Seleccione un edificio</option>
-                            {edificios.map((dato, index) => (
-                              <option key={index} value={dato.id_edificio}>
-                                {dato.nombre}
+                            {edificios.map((dato) => (
+                              <option key={dato.ID} value={dato.ID}>
+                                {dato.NOMBRE}
                               </option>
                             ))}
                           </select>
@@ -749,9 +545,9 @@ const FormularioCrearClases = () => {
                             className=" form-control w-75"
                           >
                             <option value="">Seleccione un aula</option>
-                            {aulas.results?.map((dato, index) => (
-                              <option key={index} value={dato.id_aula}>
-                                {dato.num_aula}
+                            {aulas.map((dato) => (
+                              <option key={dato.ID} value={dato.ID}>
+                                {dato.NOMBRE}
                               </option>
                             ))}
                           </select>
@@ -771,7 +567,7 @@ const FormularioCrearClases = () => {
                             className=" form-control w-75"
                             value={cuposDisponibles}
                             min={0}
-                            max={50}
+                            max={40}
                             onChange={handleSelectCupos}
                           />
                         </div>

@@ -292,8 +292,21 @@ code {
 }
 
 .btn-secciones:hover {
-  background-color: #5cb3c1 !important;
-  border-color: #5cb3c1 !important;
+  background-image: linear-gradient(#01587a, #5cb3c1) !important;
+  color: #fff !important;
+}
+
+.btn-secciones-danger{
+  border-color: red !important;
+  color: red !important;
+  border-radius: 10px;
+  font-family: "Heebo", sans-serif;
+  font-weight: 700;
+  margin: 10px;
+}
+
+.btn-secciones-danger:hover {
+  background-image: linear-gradient(red, #e3e633) !important;
   color: #fff !important;
 }
 

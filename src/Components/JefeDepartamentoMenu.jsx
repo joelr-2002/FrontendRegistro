@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarTimes, faTasks, faCheckToSlot, faHistory, faStar, faSignal, faKey } from "@fortawesome/free-solid-svg-icons";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
 
 //Opciones Menú
 const OpcionesMenu = (props) => {
@@ -22,7 +24,32 @@ const OpcionesMenu = (props) => {
   );
 };
 
-const EstudianteMenu = () => {
+const JefeDepartamentoMenu = () => {
+
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const CargarUsuario = () => {
+
+      //fetch para obtener datos de usuario con numero de empleado (se obtiene de la cookie nEmpleado)
+      fetch(apiurl + "/api/v1/docentes/info-inicio-jefe", {
+        headers: {
+          "x-token": "bearer " + Cookies.get("x-token"),
+        }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUser(data.data[0]);
+          console.log(user);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    CargarUsuario();
+  }, []);
+
   return (
     <>
       <style>
@@ -42,21 +69,24 @@ const EstudianteMenu = () => {
     <NavbarLoggedInComponent
         urlLogo= "../../assets/unah_logo.png"
     />
-      <div className="containerP menu-container ">
+      <div className="containerP menu-container">
         <Row className="mb-3">
           <Col>
             <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
               Jefe de Departamento
             </h2>
-            <h4>
-              Bienvenido --placeholder--
-            </h4>
-            <h4>
-                Facultad: --placeholder--
-            </h4>
-            <h4>
-                Centro Universitario: --placeholder--
-            </h4>
+            <h5>
+              Bienvenido {user.NOMBRE}
+            </h5>
+            <h5>
+              Facultad: {user.FACULTAD}
+            </h5>
+            <h5>
+                Carrera: {user.CARRERA}
+            </h5>
+            <h5>
+                Centro Universitario: {user.CENTRO}
+            </h5>
           </Col>
         </Row>
         <Row className="mb-3">
@@ -98,4 +128,4 @@ const EstudianteMenu = () => {
   );
 };
 
-export default EstudianteMenu;
+export default JefeDepartamentoMenu;

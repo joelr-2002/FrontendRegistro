@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
 
 export const JefeDepartamentoVerSeccion = () => {
   const [docenteData, setDocenteData] = useState([]);
@@ -21,18 +23,18 @@ export const JefeDepartamentoVerSeccion = () => {
   };
 
   const fetchClases = () => {
-    if (docenteData.length > 0 && docenteData[0].carrera_id) {
-      fetch(
-        `http://localhost:8081/clasesDisponibles/${docenteData[0].carrera_id}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setClases(data);
-        })
-        .catch((error) => {
-          console.error("Error al obtener las clases:", error);
-        });
-    }
+    fetch(apiurl + "/api/v1/asignaturas", {
+      headers: {
+        "x-token": "bearer " + Cookies.get("x-token"),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setClases(data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
 
@@ -56,89 +58,7 @@ export const JefeDepartamentoVerSeccion = () => {
 
   
 
-  var clasesx = [
-    {
-      id_clase: 1,
-      nombre: "Programación Orientada a Objetos",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 2,
-      nombre: "Programación II",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 3,
-      nombre: "Programación III",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 4,
-      nombre: "Programación IV",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 5,
-      nombre: "Programación V",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 6,
-      nombre: "Programación VI",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 7,
-      nombre: "Programación VII",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 8,
-      nombre: "Programación VIII",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 9,
-      nombre: "Programación IX",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 10,
-      nombre: "Programación X",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 11,
-      nombre: "Programación XI",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 12,
-      nombre: "Programación XII",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 13,
-      nombre: "Programación XIII",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 14,
-      nombre: "Programación XIV",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 15,
-      nombre: "Programación XV",
-      codigo: "I-2021",
-    },
-    {
-      id_clase: 16,
-      nombre: "Programación XVI",
-      codigo: "I-2021",
-    }
-  ];
-
+  var clasesx = clases
   return (
     <>
       <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
@@ -167,9 +87,9 @@ export const JefeDepartamentoVerSeccion = () => {
                   {clasesx
                     .slice((paginas - 1) * itemsPaginas, paginas * itemsPaginas)
                     .map((clasesx) => (
-                      <tr key={clasesx.id_clase}>
+                      <tr key={clasesx.COD}>
                         <td scope="row" className="text-center align-middle">
-                          {clasesx.nombre}
+                          {clasesx.COD + " " + clasesx.NOMBRE}
                         </td>
                         <td
                           scope="row"
@@ -177,7 +97,7 @@ export const JefeDepartamentoVerSeccion = () => {
                         >
                           <button
                             className="btn btn-secciones btn-outline-success btn-w"
-                            onClick={() => mostrarSecciones(clasesx)}
+                            onClick={() => mostrarSecciones(clasesx.COD)}
                           >
                             Ver secciones
                           </button>

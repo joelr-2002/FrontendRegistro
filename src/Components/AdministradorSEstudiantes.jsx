@@ -6,7 +6,7 @@ import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
 
-const AdmAspirantes = () => {
+const AdmSEstudiantes = () => {
   const [csvData, setCsvData] = useState([]);
   const [fileSelected, setFileSelected] = useState(false);
   const [csvError, setCSVError] = useState(false);
@@ -34,11 +34,11 @@ const AdmAspirantes = () => {
       return;
     }
   
-    const fileName = "notas_aspirantes.csv";
+    const fileName = "datos-estudiantes.csv";
     const formData = new FormData();
-    formData.append("notas_aspirantes", new File([csvData[0][0]], fileName));
+    formData.append("datos_estudiantes", new File([csvData[0][0]], fileName));
   
-    fetch(apiurl + "/api/v1/admisiones/cargar-notas", {
+    fetch(apiurl + "/api/v1/admisiones/registrar-estudiantes", {
       method: "POST",
       headers: {
         "x-token": "bearer " + Cookies.get("x-token"),
@@ -80,7 +80,7 @@ const AdmAspirantes = () => {
       </NavbarLoggedInComponent>
 
       <div className="containerP text-center">
-        <h2>Aspirantes</h2>
+        <h2>Estudiantes</h2>
         <br />
 
         <CSVReader onFileLoaded={handleCSV} ref={fileInputRef} />
@@ -99,11 +99,11 @@ const AdmAspirantes = () => {
         )}
 
         <Button className={"btnE1"} onClick={handleUpload}>
-          Subir Notas de Aspirantes
+          Subir Estudiantes
         </Button>
       </div>
     </>
   );
 };
 
-export default AdmAspirantes;
+export default AdmSEstudiantes;

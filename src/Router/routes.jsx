@@ -8,6 +8,9 @@ import AdmNotas from "../Components/AdministradorNotas";
 import AdmPeriodo from "../Components/AdministradorPeriodo";
 import AdmConfPeriodo from "../Components/AdministradorConfPeriodo";
 import AdmAspirantes from "../Components/AdministradorAspirantes";
+import AdmSEstudiantes from "../Components/AdministradorSEstudiantes";
+import AdmDEstudiantes from "../Components/AdministradorDEstudiantes";
+
 
 import EstudiantesMenu from "../Components/EstudiantesMenu";
 import EstudiantesEvalucionDocente from "../Components/EstudiantesEvaluacionDocente";
@@ -22,8 +25,6 @@ import JefeDepartamentoEditarSeccion from "../Components/JefeDepartamentoEditarS
 
 import DocentesMenu from "../Components/DocentesMenu";
 import DocentesSubirNotas from "../Components/DocentesSubirNotas";
-
-import TestiImagenes from "../Components/testImagenes";
 
 const RoutesComponent = () => {
   return (
@@ -41,6 +42,8 @@ const RoutesComponent = () => {
         <Route path="/administrador/nuevo-periodo" element={<AdmConfPeriodo />} />
         <Route path="/administrador/actualizar-periodo" element={<AdmConfPeriodo />} />
         <Route path="/administrador/aspirantes" element={<AdmAspirantes />} />
+        <Route path="/administrador/subir-estudiantes" element={<AdmSEstudiantes />} />
+        <Route path="/administrador/descargar-estudiantes" element={<AdmDEstudiantes />} />
 
         <Route path="/estudiantes" element={<EstudiantesMenu />} />
         <Route path="/estudiantes/evaluacion-docente" element={<EstudiantesEvalucionDocente />} />
@@ -55,8 +58,6 @@ const RoutesComponent = () => {
       
         <Route path="/docentes" element={<DocentesMenu />} />
         <Route path="/docentes/notas" element={<DocentesSubirNotas />} />
-
-        <Route path="/test" element={<TestiImagenes />} />
       </Routes>
     </Router>
   );

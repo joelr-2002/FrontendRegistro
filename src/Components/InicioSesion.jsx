@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import NavbarComponente from './NavbarComponente';
 import Cookies from 'js-cookie';
 import apiurl from '../utils/apiurl.js';
+import { contains } from 'jquery';
 
 /**
  * Componente para el inicio de sesión.
@@ -17,6 +18,7 @@ const LoginComponent = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [passwordUserError, setPasswordUserError] = useState(false);
 
     //Revisa el rol guardado en la cookie para redirigir al usuario a la página correspondiente
     const [redirected, setRedirected] = useState(false);
@@ -26,11 +28,15 @@ const LoginComponent = () => {
         if (rol === 'Estudiante') {
             setRedirected(true);
             window.location.href = '/estudiantes';
-        } else if (rol === 'Docente') {
+        } else if (rol === 'docente') {
             setRedirected(true);
             window.location.href = '/docentes';
         } else if (rol === 'administrador') {
             window.location.href = '/administrador'; 
+        } else if (rol === 'coordinador') {
+            window.location.href = '/coordinador'; 
+        } else if (rol === 'jefe') {
+            window.location.href = '/jefe-departamento'; 
         }
     }
 
@@ -42,13 +48,13 @@ const LoginComponent = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         validateForm();
+        setIsLoading(true);
         
         //Si email tiene letras o carácteres especiales, no es válido
        
         //Si email y password son válidos, se realiza la autenticación
         if (emailValid && passwordValid) {
             //Se realiza la petición
-            setIsLoading(true);
             fetch(apiurl+'/api/v1/login', {
                 method: 'POST',
                 headers: {
@@ -62,33 +68,48 @@ const LoginComponent = () => {
                 .then((res) => res.json())
                 .then((data) => {
                     setIsLoading(false);
+                    setPasswordUserError(false);
                     console.log(data);
                     if (data.mensaje === 'Se ha iniciado sesión exitosamente.') {
                         console.log('Usuario autenticado');
                         Cookies.set('x-token', data.token);
                         Cookies.set('user', data.data.rol);
+                        Cookies.set('nEmpleado', email);
                         const rol = Cookies.get('user');
                         if (!redirected) {
                             if (rol === 'Estudiante') {
                                 setRedirected(true);
                                 window.location.href = '/estudiantes';
-                            } else if (rol === 'Docente') {
+                            } else if (rol === 'docente') {
                                 setRedirected(true);
                                 window.location.href = '/docentes';
                             } else if (rol === 'administrador') {
                                 window.location.href = '/administrador'; 
-                            } else if (rol === 'Coordinador') {
+                            } else if (rol === 'coordinador') {
                                 window.location.href = '/coordinador'; 
-                            } else if (rol === 'Jefe') {
+                            } else if (rol === 'jefe') {
                                 window.location.href = '/jefe-departamento'; 
                             }
                         }
                     }
+
+                    if (data.mensaje === 'Usuario o contraseña incorrecto!' || data.mensaje.includes('Ocurrio un error al iniciar sesión:')) {
+                        console.log('Usuario o contraseña incorrectos');
+                        setPasswordUserError(true);
+                    }
+                    
+                    console.log(data.mensaje);
                 })
                 .catch((err) =>{
                     console.error(err)
+                    setPasswordUserError(true);
                     setIsLoading(false);});
         }
+        //Si el usuario o la contraseña son incorrectos, se muestra un mensaje de error 
+        else {
+            setIsLoading(false);
+        }
+            
     };
 
     /**
@@ -175,6 +196,13 @@ const LoginComponent = () => {
                                 </Button>
                             </Col>
                         </Row>
+
+                        {passwordUserError && <div style={{
+                            fontFamily: 'Heebo',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            color: 'red'
+                            }}>Usuario o contraseña incorrectos</div>}
                     </Form>
 
                     <Row className="mt-4">

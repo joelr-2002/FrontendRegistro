@@ -38,60 +38,84 @@ const CreacionDocente = () => {
 
   //Validaciones
   const validateForm = () => {
-    setDNIError(dni === "" || dni.length !== 13);
-    setPrimerNombreError(primerNombre === "");
-    setSegundoNombreError(segundoNombre === "");
-    setPrimerApellidoError(primerApellido === "");
-    setSegundoApellidoError(segundoApellido === "");
-    setDireccionError(direccion === "");
-    setCorreoError(correoE === "");
-    setContraseniaError(contrasenia === "");
-    setFotoPerfilError(fotoEmpleado === null);
-    setRolIDError(rolID === "");
-    setCentroRegionalError(centroRegional === "");
-    setCarreraError(carrera === "");
-    setTelefonoError(telefono === "");
 
+    if(!dni || dni.length !== 13){
+      setDNIError(true);
+      console.log(dniError)
+    }
+    if(!primerNombre){
+      setPrimerNombreError(true);
+    }
+     if(!segundoNombre){
+      setSegundoNombreError(true);
+    }
+     if(!primerApellido){
+      setPrimerApellidoError(true);
+    }
+     if(!segundoApellido){
+      setSegundoApellidoError(true);
+    }
+     if(!direccion){
+      setDireccionError(true);
+    }
+     if(!correoE){
+      setCorreoError(true);
+    } 
+     if(!contrasenia){
+      setContraseniaError(true);
+    }
+     if(!fotoEmpleado){
+      setFotoPerfilError(true);
+    }
+     if(!rolID){
+      setRolIDError(true);
+    }
+     if(!centroRegional){
+      setCentroRegionalError(true);
+    }
+     if(!carrera){
+      setCarreraError(true);
+    }
+     if(!telefono){
+      setTelefonoError(true);
+    }
+  
     setCrearDocenteError(
-      dni === "" ||
+      !dni ||
         dni.length !== 13 ||
-        primerNombre === "" ||
-        segundoNombre === "" ||
-        primerApellido === "" ||
-        segundoApellido === "" ||
-        direccion === "" ||
-        correoE === "" ||
-        contrasenia === "" ||
-        fotoEmpleado === null ||
-        rolID === "" ||
-        centroRegional === "" ||
-        carrera === "" ||
-        telefono === ""
+        !primerNombre ||
+        !segundoNombre ||
+        !primerApellido ||
+        !segundoApellido ||
+        !direccion ||
+        !correoE ||
+        !contrasenia ||
+        !fotoEmpleado ||
+        !rolID ||
+        !centroRegional ||
+        !carrera ||
+        !telefono
     );
   };
 
   const renderErrorFeedback = (error, message) => {
-    return (
-      error && (
-        <Form.Control.Feedback type="invalid">{message}</Form.Control.Feedback>
-      )
-    );
+    return error ? <Form.Control.Feedback type="invalid">{message}</Form.Control.Feedback> : null;
   };
 
   const resetearErrores = () => {
-    setDNIError(true);
-    setPrimerNombreError(true);
-    setSegundoNombreError(true);
-    setPrimerApellidoError(true);
-    setSegundoApellidoError(true);
-    setDireccionError(true);
-    setCorreoError(true);
-    setContraseniaError(true);
-    setFotoPerfilError(true);
-    setRolIDError(true);
-    setCentroRegionalError(true);
-    setCarreraError(true);
-    setTelefonoError(true);
+    setDNIError(false);
+    setPrimerNombreError(false);
+    setSegundoNombreError(false);
+    setPrimerApellidoError(false);
+    setSegundoApellidoError(false);
+    setDireccionError(false);
+    setCorreoError(false);
+    setContraseniaError(false);
+    setFotoPerfilError(false);
+    setRolIDError(false);
+    setCentroRegionalError(false);
+    setCarreraError(false);
+    setTelefonoError(false);
   };
 
   //fetch para obtener los centros regionales
@@ -140,7 +164,6 @@ const CreacionDocente = () => {
       formData.append("carrera", carrera);
       formData.append("telefono", telefono);
       formData.append("contrasenia", contrasenia);
-      console.log(fotoEmpleado);
       formData.append("foto_empleado", fotoEmpleado);
 
       fetch(apiurl + "/api/v1/docentes", {
@@ -159,9 +182,10 @@ const CreacionDocente = () => {
      
 
       alert("Formulario enviado correctamente");
+      resetearErrores();
     } else {
       console.log("Formulario no enviado");
-      resetearErrores();
+    
     }
   };
 
@@ -188,23 +212,28 @@ const CreacionDocente = () => {
               <Form.Group controlId="formDNI">
                 <Form.Label>DNI</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   placeholder="DNI"
                   value={dni}
                   onChange={(e) => setDNI(e.target.value)}
+                  isValid={dni!==''&& dni.length===13}
+                  isInvalid={dniError===true}
                 />
+                <Form.Control.Feedback type="invalid">
+                  *Este campo es obligatorio y debe de ser un DNI válido
+                </Form.Control.Feedback>
               </Form.Group>
-              <Form.Control.Feedback type="invalid">
-                *Este campo es obligatorio
-              </Form.Control.Feedback>
+              
             </Col>
             <Col>
-              <Form.Group controlId="formCentroRegional">
+              <Form.Group controlId="formRolID">
                 <Form.Label>Rol del Empleado</Form.Label>
                 <Form.Control
                   as="select"
                   value={rolID}
                   onChange={(e) => setRolID(e.target.value)}
+                  isValid={rolID!==''}
+                  isInvalid={rolIDError===true}
                 >
                   <option value="">Seleccione un rol</option>
                   <option value={'1'}>Docente</option>
@@ -226,6 +255,8 @@ const CreacionDocente = () => {
                   placeholder="Primer nombre del Docente"
                   value={primerNombre}
                   onChange={(e) => setPrimerNombre(e.target.value)}
+                  isValid={primerNombre!==''}
+                  isInvalid={primerNombreError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -240,6 +271,8 @@ const CreacionDocente = () => {
                   placeholder="Segundo nombre del Docente"
                   value={segundoNombre}
                   onChange={(e) => setSegundoNombre(e.target.value)}
+                  isValid={segundoNombre!==''}
+                  isInvalid={segundoNombreError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -257,6 +290,8 @@ const CreacionDocente = () => {
                   placeholder="Primer apellido del Docente"
                   value={primerApellido}
                   onChange={(e) => setPrimerApellido(e.target.value)}
+                  isValid={primerApellido!==''}
+                  isInvalid={primerApellidoError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -271,6 +306,8 @@ const CreacionDocente = () => {
                   placeholder="Segundo apellido del Docente"
                   value={segundoApellido}
                   onChange={(e) => setSegundoApellido(e.target.value)}
+                  isValid={segundoApellido!==''}
+                  isInvalid={segundoApellidoError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -287,6 +324,8 @@ const CreacionDocente = () => {
                   placeholder="Dirección"
                   value={direccion}
                   onChange={(e) => setDireccion(e.target.value)}
+                  isValid={direccion!==''}
+                  isInvalid={direccionError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -304,6 +343,8 @@ const CreacionDocente = () => {
                   placeholder="Correo Electrónico"
                   value={correoE}
                   onChange={(e) => setCorreoE(e.target.value)}
+                  isValid={correoE!==''}
+                  isInvalid={correoError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -314,10 +355,12 @@ const CreacionDocente = () => {
               <Form.Group controlId="formContrasenia">
                 <Form.Label>Contrasenia</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="password"
                   placeholder="Contrasenia"
                   value={contrasenia}
                   onChange={(e) => setContrasenia(e.target.value)}
+                  isValid={contrasenia!==''}
+                  isInvalid={contraseniaError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -350,6 +393,9 @@ const CreacionDocente = () => {
                     setFotoEmpleado(file);
                     console.log(file);
                   }}
+
+                  isValid={fotoEmpleado!==null}
+                  isInvalid={fotoPerfilError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
@@ -366,6 +412,8 @@ const CreacionDocente = () => {
                     setCentroRegional(e.target.value);
                     obtenerCarrerasCentro(e);
                   }}
+                  isValid={centroRegional!==''}
+                  isInvalid={centroRegionalError===true}
                 >
                   <option value="">Seleccione un centro regional</option>
                   {centros.map((centro) => (
@@ -389,6 +437,8 @@ const CreacionDocente = () => {
                   as="select"
                   value={carrera}
                   onChange={(e) => setCarrera(e.target.value)}
+                  isValid={carrera!==''}
+                  isInvalid={carreraError===true}
                 >
                   <option value="">Seleccione una carrera</option>
                   {carreras.map((carrera) => (
@@ -406,10 +456,12 @@ const CreacionDocente = () => {
               <Form.Group controlId="formTelefono">
                 <Form.Label>Teléfono</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   placeholder="Teléfono"
                   value={telefono}
                   onChange={(e) => setTelefono(e.target.value)}
+                  isValid={telefono!==''}
+                  isInvalid={telefonoError===true}
                 />
                 <Form.Control.Feedback type="invalid">
                   *Este campo es obligatorio
