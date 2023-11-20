@@ -196,6 +196,10 @@ code {
   color: #01587a;
 }
 
+.opciones-menu:hover {
+  background-color: #c7d8dd;
+}
+
 
 
 /*Fin Estilos Menús*/

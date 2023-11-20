@@ -1,3 +1,3 @@
-export const apiurl = 'http://192.168.196.128:3001';
+export const apiurl = 'http://192.168.191.114:3002';
 
 export default apiurl;

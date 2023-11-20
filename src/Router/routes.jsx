@@ -13,7 +13,7 @@ import AdmDEstudiantes from "../Components/AdministradorDEstudiantes";
 
 
 import EstudiantesMenu from "../Components/EstudiantesMenu";
-import EstudiantesEvalucionDocente from "../Components/EstudiantesEvaluacionDocente";
+import EvaluacionDocentes from "../Components/EstudiantesEvaluacionDocente";
 import EstudiantesNotas from "../Components/EstudiantesNotas";
 import EstudiantesCancelaciones from "../Components/EstudiantesCancelaciones";
 
@@ -25,6 +25,7 @@ import JefeDepartamentoEditarSeccion from "../Components/JefeDepartamentoEditarS
 
 import DocentesMenu from "../Components/DocentesMenu";
 import DocentesSubirNotas from "../Components/DocentesSubirNotas";
+import DocentesClasesMenu from "../Components/DocentesClasesMenu";
 
 const RoutesComponent = () => {
   return (
@@ -46,7 +47,7 @@ const RoutesComponent = () => {
         <Route path="/administrador/descargar-estudiantes" element={<AdmDEstudiantes />} />
 
         <Route path="/estudiantes" element={<EstudiantesMenu />} />
-        <Route path="/estudiantes/evaluacion-docente" element={<EstudiantesEvalucionDocente />} />
+        <Route path="/estudiantes/evaluacion-docente" element={<EvaluacionDocentes />} />
         <Route path="/estudiantes/notas" element={<EstudiantesNotas />} />
         <Route path="/estudiantes/cancelaciones" element={<EstudiantesCancelaciones />} />
         
@@ -57,6 +58,7 @@ const RoutesComponent = () => {
         <Route path="/jefe-departamento/editar-seccion" element={<JefeDepartamentoEditarSeccion />} />
       
         <Route path="/docentes" element={<DocentesMenu />} />
+        <Route path="/docentes/clases" element={<DocentesClasesMenu />} />
         <Route path="/docentes/notas" element={<DocentesSubirNotas />} />
       </Routes>
     </Router>

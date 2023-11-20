@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { Row } from "react-bootstrap";
 import "../Styles/index.css";
 import { HorasInicioFin } from "../utils/JefeDepartamento/convertirFecha";
@@ -13,7 +13,17 @@ const FormularioCrearClases = () => {
   const navigate = useNavigate();
   // ------------------------
   const { horas, minutos } = HorasInicioFin();
-  const [checkboxValues, setCheckboxValues] = useState([]);
+
+  const [checkboxValues, setCheckboxValues] = useState({
+    Lunes: false,
+    Martes: false,
+    Miercoles: false, 
+    Jueves: false,
+    Viernes: false,
+    Sabado: false,
+    Domingo: false,
+});
+
   const [horaInicial, setHoraInicial] = useState("00");
   const [minutosInicial, setMinutosInicial] = useState("00");
   const [horaFinal, setHoraFinal] = useState("00");
@@ -118,82 +128,153 @@ const FormularioCrearClases = () => {
     }
   };
 
-  const Guardar = () => {
-    
-    const data = {
-      "asignatura_cod": selectedClase,
-      "docente_n_empleado": selectedDocente,
-      "lunes": lunes,
-      "martes": martes,
-      "miercoles": miercoles,
-      "jueves": jueves,
-      "viernes": viernes,
-      "sabado": sabado,
-      "domingo": domingo,
-      "hora_entrada": horaInicial,
-      "hora_salida": horaFinal,
-      "aula_id": selectedAula,
-      "cupos": cuposDisponibles,
-      "duracion": duracion
-    };
 
-    console.log(data);
-
+const Guardar = () => {
+  const data = {
+    "asignatura_cod": selectedClase,
+    "docente_n_empleado": selectedDocente,
+    "lunes": lunes,
+    "martes": martes,
+    "miercoles": miercoles,
+    "jueves": jueves,
+    "viernes": viernes,
+    "sabado": sabado,
+    "domingo": domingo,
+    "hora_entrada": horaInicial,
+    "hora_salida": horaFinal,
+    "aula_id": selectedAula,
+    "cupos": cuposDisponibles,
+    "duracion": duracion,
   };
+
+  console.log(data);
+
+  if (error === true) {
+    alert("Campos vacíos, por favor revise los datos");
+    return;
+  }
+
+  if (data.hora_entrada === data.hora_salida) {
+    alert("La hora de entrada y salida no pueden ser iguales");
+    return;
+  }
+
+  if (data.hora_entrada > data.hora_salida) {
+    alert("La hora de entrada no puede ser mayor a la hora de salida");
+    return;
+  }
+
+  //fetch para crear seccion
+  fetch(apiurl + "/api/v1/secciones/crear", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-token": "bearer " + Cookies.get("x-token"),
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      const mensaje = responseJson.mensaje;
+
+      if (mensaje === "SECCION CREADA CORRECTAMENTE") {
+        alert("Sección creada con éxito");
+        navigate("/jefe-departamento/secciones");
+      } else {
+        // Mostrar mensajes de acuerdo al contenido de `mensaje`
+        if (mensaje.includes("EXISTE UN TRASLAPE DE AULA")) {
+          const aula = mensaje.split("EXISTE UN TRASLAPE DE AULA: ")[1];
+          alert("Existe un traslape de aula con: " + aula);
+        } else if (
+          mensaje ===
+          "NO CORRESPONDE EL HORARIO SELECCIONADO CON LAS UNIDADES VALORATIVAS DE LA ASIGNTURA"
+        ) {
+          alert(
+            "No corresponden las unidades valorativas seleccionadas con la asignatura"
+          );
+        } else if (mensaje.includes("EXISTE UN TRASLAPE DEL DOCENTE:")) {
+          const docente = mensaje.split(
+            "EXISTE UN TRASLAPE DEL DOCENTE: "
+          )[1];
+          alert("Existe un traslape del docente: " + docente);
+        } else {
+          // Manejar otros casos según sea necesario
+          alert("Otro tipo de error: " + mensaje);
+        }
+      }
+    })
+    .catch((error) => {
+      console.log("Error: " + error);
+    });
+};
+
+ //useEffect para validar campos
+  useEffect(() => {
+    if (selectedClase === "" || selectedDocente === "" || selectedEdificio === "" || selectedAula === "" || cuposDisponibles === "" || duracion === "" || horaInicial === "" || horaFinal === "") {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  }, [selectedClase, selectedDocente, selectedEdificio, selectedAula, cuposDisponibles, duracion, horaInicial, horaFinal]);
+
 
   const regresar = () => {
     window.history.back();
   };
 
-  const handleCheckboxChange = (event) => {
-    if (checkboxLunes){
-      setLunes("1");
-    } else if (!checkboxLunes){
-      setLunes("0");
+  const handleCheckboxChange = useCallback((day) => {
+    
+    setCheckboxValues(prevState => ({
+      ...prevState,
+      [day]: !prevState[day],
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (checkboxValues.Lunes === true) {
+      setLunes(1);
+    } else if (checkboxValues.Lunes === false) {
+      setLunes(0);
     }
 
-    if (checkboxMartes){
-      setMartes("1");
-    }
-    else if (!checkboxMartes){
-      setMartes("0");
-    }
-
-    if (checkboxMiercoles){
-      setMiercoles("1");
-    }
-    else if (!checkboxMiercoles){
-      setMiercoles("0");
+    if (checkboxValues.Martes === true) {
+      setMartes(1);
+    } else if (checkboxValues.Martes === false) {
+      setMartes(0);
     }
 
-    if (checkboxJueves){
-      setJueves("1");
-    }
-    else if (!checkboxJueves){
-      setJueves("0");
-    }
-
-    if (checkboxViernes){
-      setViernes("1");
-    }
-    else if (!checkboxViernes){
-      setViernes("0");
+    if (checkboxValues.Miercoles === true) {
+      setMiercoles(1);
+    } else if (checkboxValues.Miercoles === false) {
+      setMiercoles(0);
     }
 
-    if (checkboxSabado){
-      setSabado("1");
-    }
-    else if (!checkboxSabado){
-      setSabado("0");
+    if (checkboxValues.Jueves === true) {
+      setJueves(1);
+    } else if (checkboxValues.Jueves === false) {
+      setJueves(0);
     }
 
-    if (checkboxDomingo){
-      setDomingo("1");
+    if (checkboxValues.Viernes === true) {
+      setViernes(1);
+    } else if (checkboxValues.Viernes === false) {
+      setViernes(0);
     }
-    else if (!checkboxDomingo){
-      setDomingo("0");
+
+    if (checkboxValues.Sabado === true) {
+      setSabado(1);
+    } else if (checkboxValues.Sabado === false) {
+      setSabado(0);
     }
-  };
+
+    if (checkboxValues.Domingo === true) {
+      setDomingo(1);
+    } else if (checkboxValues.Domingo === false) {
+      setDomingo(0);
+    }
+
+  }, [checkboxValues]);
 
   const handleSelectClase = (event) => {
     setSelectedClase(event.target.value);
@@ -286,7 +367,7 @@ const FormularioCrearClases = () => {
                           >
                             <option value="">Seleccione un docente</option>
                             {docente.map((data, index) => (
-                              <option key={index} value={data.N_EMPLEADO}>
+                              <option key={index} value={data.ID}>
                                 {data.NOMBRE}
                               </option>
                             ))}
@@ -317,10 +398,9 @@ const FormularioCrearClases = () => {
                               type="checkbox"
                               className="form-check-input"
                               name="Lunes"
-                              checked={checkboxValues.includes("Lunes")}
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxLunes(!checkboxLunes);
+                              checked={checkboxValues.Lunes}
+                              onChange={() => {
+                                handleCheckboxChange("Lunes");
                               }}
                               value="Lunes"
                             />
@@ -334,10 +414,9 @@ const FormularioCrearClases = () => {
                               className="form-check-input"
                               name="Martes"
                               value="Martes"
-                              checked={checkboxValues.includes("Martes")}
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxMartes(!checkboxMartes);
+                              checked={checkboxValues.Martes}
+                              onChange={() => {
+                                handleCheckboxChange("Martes");
                               }}
                             />
                             <label className="form-check-label mx-2">
@@ -350,10 +429,9 @@ const FormularioCrearClases = () => {
                               className="form-check-input"
                               name="Miercoles"
                               value="Miercoles"
-                              checked={checkboxValues.includes("Miercoles")}
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxMartes(!checkboxMiercoles);
+                              checked={checkboxValues.Miercoles}
+                              onChange={() => {
+                                handleCheckboxChange("Miercoles");
                               }}
                             />
                             <label className="form-check-label mx-2">
@@ -367,11 +445,10 @@ const FormularioCrearClases = () => {
                               name="Jueves"
                               value="Jueves"
                               checked={
-                                checkboxValues.includes("Jueves") || false
+                                checkboxValues.Jueves
                               }
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxMartes(!checkboxJueves);
+                              onChange={() => {
+                                handleCheckboxChange("Jueves");
                               }}
                             />
                             <label className="form-check-label mx-2">
@@ -384,10 +461,9 @@ const FormularioCrearClases = () => {
                               className="form-check-input"
                               name="Viernes"
                               value="Viernes"
-                              checked={checkboxValues.includes("Viernes")}
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxMartes(!checkboxViernes);
+                              checked={checkboxValues.Viernes}
+                              onChange={() => {
+                                handleCheckboxChange("Viernes");
                               }}
                             />
                             <label className="form-check-label mx-2">
@@ -400,10 +476,9 @@ const FormularioCrearClases = () => {
                               className="form-check-input"
                               name="Sabado"
                               value="Sabado"
-                              checked={checkboxValues.includes("Sabado")}
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxMartes(!checkboxSabado);
+                              checked={checkboxValues.Sabado}
+                              onChange={() => {
+                                handleCheckboxChange("Sabado");
                               }}
                             />
                             <label className="form-check-label mx-2">
@@ -416,10 +491,9 @@ const FormularioCrearClases = () => {
                               className="form-check-input"
                               name="Domingo"
                               value="Domingo"
-                              checked={checkboxValues.includes("Domingo")}
-                              onChange={(e) => {
-                                handleCheckboxChange(e);
-                                setCheckboxMartes(!checkboxDomingo);
+                              checked={checkboxValues.Domingo}
+                              onChange={() => {
+                                handleCheckboxChange("Domingo");
                               }}
                             />
                             <label className="form-check-label mx-2">

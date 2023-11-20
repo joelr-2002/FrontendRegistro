@@ -1,5 +1,6 @@
 import React from "react";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import {Button } from "react-bootstrap";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
 
@@ -23,9 +24,13 @@ const AdmDEstudiantes = () => {
       .then((blob) => {
         
         const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "notas_estudiantes.csv"; 
+        document.body.appendChild(a);
+        a.click();
 
-        window.open(url, "_blank");
-
+        document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       })
       .catch((error) => {
@@ -54,7 +59,7 @@ const AdmDEstudiantes = () => {
         <h2>Estudiantes</h2>
         <br />
 
-        <button onClick={handleDownload}>Descargar CSV</button>
+        <Button className="btnE1" onClick={handleDownload}>Descargar CSV</Button>
       </div>
       
     </div>

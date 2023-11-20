@@ -15,17 +15,16 @@ const AdmSEstudiantes = () => {
 
   const handleCSV = (data, fileInfo) => {
     console.log("Data:", data);
-  
-  
-      setCsvData(data);
+
+    if (data && data.length > 0) {
+      const filasCSV = data.slice(0); 
+
+      setCsvData(filasCSV);
       setFileSelected(true);
       setCSVError(false);
-    
-  };
-  
-
-  const resetearErrores = () => {
-    setCSVError(false);
+    } else {
+      setCSVError(true);
+    }
   };
 
   const handleUpload = () => {
@@ -33,11 +32,19 @@ const AdmSEstudiantes = () => {
       setCSVError(true);
       return;
     }
-  
+
     const fileName = "datos-estudiantes.csv";
-    const formData = new FormData();
-    formData.append("datos_estudiantes", new File([csvData[0][0]], fileName));
+
+
+    const csvString = csvData.map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvString], { type: 'text/csv' });
+
   
+    const formData = new FormData();
+    formData.append("datos_estudiantes", blob, fileName);
+
+   
     fetch(apiurl + "/api/v1/admisiones/registrar-estudiantes", {
       method: "POST",
       headers: {
@@ -51,17 +58,22 @@ const AdmSEstudiantes = () => {
       })
       .then((data) => {
         console.log(data);
+
+        setFileSelected(false);
+        fileInputRef.current.value = ""; // Limpiar el nombre del archivo después de enviarlo
       })
       .catch((err) => {
         console.error(err);
       });
-  
+
     resetearErrores();
-  
+    
     alert("Archivo enviado correctamente");
   };
-  
-  
+
+  const resetearErrores = () => {
+    setCSVError(false);
+  };
 
   return (
     <>

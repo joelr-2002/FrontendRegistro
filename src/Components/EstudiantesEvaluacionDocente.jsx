@@ -1,8 +1,20 @@
-import React, { useState } from "react";
-import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Table,
+  Form,
+  Button,
+  Row,
+  Col,
+  Modal,
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import NavbarLoggedComponente from "./NavbarLoggedComponente";
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
+import { faYinYang } from "@fortawesome/free-solid-svg-icons";
 
-const EvaluacionDocenteForm = () => {
+const EvaluacionDocenteForm = (props) => {
   const [evaluacion, setEvaluacion] = useState({
     areaPersonal: "",
     areaProfesional: "",
@@ -20,15 +32,41 @@ const EvaluacionDocenteForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes realizar alguna acción con la evaluación, como enviarla a un servidor.
-    console.log("Evaluación:", evaluacion);
+  
+    
+  
+    const dataEv = {
+      id: props.idSeccion,
+      observaciones: evaluacion.observaciones,
+      area_personal: parseInt(evaluacion.areaPersonal),
+      area_profesional: parseInt(evaluacion.areaProfesional),
+      area_academico: parseInt(evaluacion.areaAcademica),
+    };
+
+    console.log(dataEv)
+  
+    fetch(apiurl + "/api/v1/estudiante/evaluacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": "bearer " + Cookies.get("x-token"),
+      },
+      body: JSON.stringify(dataEv),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        alert("Formulario enviado Correctamente");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Formulario no enviado");
+      });
   };
+  
 
   return (
     <>
-      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png">
-        {" "}
-      </NavbarLoggedInComponent>
       <Container className="containerP">
         <Row className="mb-3">
           <Col>
@@ -43,7 +81,7 @@ const EvaluacionDocenteForm = () => {
             </h2>
           </Col>
         </Row>
-        <Form onSubmit={handleSubmit}>
+        <Form>
           <div className="row">
             <div className="col-md-12">
               <Form.Group controlId="areaPersonal">
@@ -64,10 +102,10 @@ const EvaluacionDocenteForm = () => {
                       >
                         SELECCIONE UNA OPCIÓN
                       </option>
-                      <option value="MALO">MALO</option>
-                      <option value="BUENO">BUENO</option>
-                      <option value="MUY BUENO">MUY BUENO</option>
-                      <option value="EXCELENTE">EXCELENTE</option>
+                      <option value={1}>MALO</option>
+                      <option value={2}>BUENO</option>
+                      <option value={3}>MUY BUENO</option>
+                      <option value={4}>EXCELENTE</option>
                     </Form.Control>
                   </Col>
                 </Row>
@@ -92,17 +130,17 @@ const EvaluacionDocenteForm = () => {
                       >
                         SELECCIONE UNA OPCIÓN
                       </option>
-                      <option value="MALO">MALO</option>
-                      <option value="BUENO">BUENO</option>
-                      <option value="MUY BUENO">MUY BUENO</option>
-                      <option value="EXCELENTE">EXCELENTE</option>
+                      <option value={1}>MALO</option>
+                      <option value={2}>BUENO</option>
+                      <option value={3}>MUY BUENO</option>
+                      <option value={4}>EXCELENTE</option>
                     </Form.Control>
                   </Col>
                 </Row>
               </Form.Group>
             </div>
           </div>
-          <div className="row" >
+          <div className="row">
             <div className="col-md-12">
               <Form.Group controlId="areaAcademica">
                 <Row style={{ padding: "10px" }}>
@@ -122,10 +160,10 @@ const EvaluacionDocenteForm = () => {
                       >
                         SELECCIONE UNA OPCIÓN
                       </option>
-                      <option value="MALO">MALO</option>
-                      <option value="BUENO">BUENO</option>
-                      <option value="MUY BUENO">MUY BUENO</option>
-                      <option value="EXCELENTE">EXCELENTE</option>
+                      <option value={1}>MALO</option>
+                      <option value={2}>BUENO</option>
+                      <option value={3}>MUY BUENO</option>
+                      <option value={4}>EXCELENTE</option>
                     </Form.Control>
                   </Col>
                 </Row>
@@ -152,22 +190,18 @@ const EvaluacionDocenteForm = () => {
           <div className="row" style={{ padding: "10px" }}>
             <div className="col-md-6">
               <Button
-                href="/estudiantes/notas"
+                href="/estudiantes/evaluacion-docente"
                 variant="primary"
-                type="submit"
+                type="button"
                 disabled={
                   evaluacion.areaAcademica == "" ||
                   evaluacion.areaProfesional == "" ||
                   evaluacion.areaPersonal == "" ||
                   evaluacion.observaciones == ""
                 }
+                onClick={handleSubmit}
               >
                 Enviar Evaluación
-              </Button>
-            </div>
-            <div className="col-md-6">
-              <Button href="/estudiantes" variant="secondary" type="submit">
-                Regresar
               </Button>
             </div>
           </div>
@@ -177,4 +211,120 @@ const EvaluacionDocenteForm = () => {
   );
 };
 
-export default EvaluacionDocenteForm;
+const EvaluacionDocentes = () => {
+
+
+  const [clases, setClases] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSeccion, setSelectedSeccion] = useState(null);
+  
+
+  useEffect(() => {
+    fetch(apiurl + "/api/v1/estudiante/secciones", {
+      headers: {
+        "x-token": "bearer " + Cookies.get("x-token"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setClases(data.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+
+  const evaluado = clases.every((clase) => clase.ESTADO_EVALUACION === 1);
+
+  // Redirigir si es necesario
+  useEffect(() => {
+    if (evaluado) {
+      window.location.href = '/estudiantes/notas';
+    }
+  }, []);
+
+  console.log(clases);
+  const handleOpenModal = (idSeccion) => {
+    setSelectedSeccion(idSeccion);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedSeccion(null);
+    setShowModal(false);
+  };
+
+  return (
+    <>
+      <NavbarLoggedComponente urlLogo="../../assets/unah_logo.png"></NavbarLoggedComponente>
+      <Container className="containerP">
+        <Row className="mb-3">
+          <Col>
+            <h2
+              style={{
+                fontFamily: "Heebo",
+                fontWeight: 700,
+                textAlign: "center",
+              }}
+            >
+              Calificaciones del Período
+            </h2>
+          </Col>
+        </Row>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Clase</th>
+              <th>Nota</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {clases.map((clase, index) => (
+              <tr key={index}>
+                <td>{clase.ID_SECCION}</td>
+                <td>{clase.NOMBRE_ASIGNATURA}</td>
+                <td>-</td>
+                <td>
+                  {clase.ESTADO_EVALUACION === 0 ? (
+                    <>
+                      <Button
+                        className="btnE2"
+                        onClick={() => handleOpenModal(clase.ID_SECCION)}
+                      >
+                        Por Evaluar{" "}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button className="btnE1" disabled>
+                        Evaluado{" "}
+                      </Button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
+        <Modal show={showModal} onHide={handleCloseModal} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title className="titulos textcenter"></Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <EvaluacionDocenteForm idSeccion={selectedSeccion} />
+          </Modal.Body>
+        </Modal>
+
+        <div className="col-md-4">
+          <Button href="/estudiantes" variant="secondary" type="submit">
+            Regresar
+          </Button>
+        </div>
+      </Container>
+    </>
+  );
+};
+
+export default EvaluacionDocentes;

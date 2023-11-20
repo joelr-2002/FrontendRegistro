@@ -8,7 +8,7 @@ import { faCaretUp, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
 import apiurl from "../utils/apiurl";
 
-import formatearFechas from '../utils/formatearFechas.js'
+import formatearFechas from "../utils/formatearFechas.js";
 
 //Componente fechas de periodo
 const Fechas = ({
@@ -18,6 +18,7 @@ const Fechas = ({
   setDatosFechas,
 }) => {
   const [idPeriodo, setIDPeriodo] = useState("");
+  const [nombrePeriodo, setNombrePeriodo] = useState("");
   const [anioPeriodo, setAnioPeriodo] = useState("");
   const [fechaIPeriodoAcd, setFechaIPeriodoAcd] = useState("");
   const [fechaFPeriodoAcd, setFechaPeriodoAcd] = useState("");
@@ -30,14 +31,6 @@ const Fechas = ({
 
   const [fechasValidas, setFechasValidas] = useState(false); // Estado para rastrear la validación
   const [mensaje, setMensaje] = useState(""); // Estado para el mensaje
-
-  const handleIDPeriodoChange = (e) => {
-    setIDPeriodo(e);
-  };
-
-  const handleAnioPeriododChange = (e) => {
-    setAnioPeriodo(e);
-  };
 
   const handleFechaIPeriodoAcdChange = (e) => {
     setFechaIPeriodoAcd(e);
@@ -187,6 +180,38 @@ const Fechas = ({
     });
   };
 
+  useEffect(() => {
+    fetch(
+      apiurl +
+        "/api/v1/admin/siguiente-periodo?tipoPeriodo=" +
+        opcionSeleccionada,
+      {
+        headers: {
+          "x-token": "bearer " + Cookies.get("x-token"),
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const dPeriodo = data.data[0].PERIODO;
+        const aPeriodo = data.data[0].ANIO;
+
+        if (dPeriodo === 1) {
+          setIDPeriodo(1);
+          setNombrePeriodo("IPAC");
+        } else if (dPeriodo === 2) {
+          setIDPeriodo(2);
+          setNombrePeriodo("IIPAC");
+        } else {
+          setNombrePeriodo(3);
+          setNombrePeriodo("IIIPAC");
+        }
+
+        setAnioPeriodo(aPeriodo);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
     <>
       <Row>
@@ -194,29 +219,11 @@ const Fechas = ({
           <Form.Group controlId="formPeriodo" style={{ padding: "10px" }}>
             <Form.Label>Periodo</Form.Label>
             <Form.Control
-              as="select"
               className="text-center"
               type="text"
-              value={idPeriodo}
-              onChange={(e) => {
-                handleIDPeriodoChange(e.target.value);
-                setFechasValidadas(false);
-              }}
-            >
-              <option value="">Seleccione un Periodo</option>
-              {opcionSeleccionada === "1" ? (
-                <>
-                  <option value={"1"}>IPAC</option>
-                  <option value={"2"}>IIPAC</option>
-                  <option value={"3"}>IIIPAC</option>
-                </>
-              ) : opcionSeleccionada === "2" ? (
-                <>
-                  <option value={"1"}>IPAC</option>
-                  <option value={"2"}>IIPAC</option>
-                </>
-              ) : null}
-            </Form.Control>
+              value={nombrePeriodo}
+              disabled
+            ></Form.Control>
           </Form.Group>
         </Col>
         <Col>
@@ -226,10 +233,7 @@ const Fechas = ({
               className="text-center"
               type="number"
               value={anioPeriodo}
-              onChange={(e) => {
-                handleAnioPeriododChange(e.target.value);
-                setFechasValidadas(false);
-              }}
+              disabled
             />
           </Form.Group>
         </Col>
@@ -744,8 +748,8 @@ const AdmConfPeriodo = () => {
     const matriculaData = opcionesConfMatricula.map((opcion) => ({
       p_indice_inicio: opcion.indiceMinimo,
       p_indice_final: opcion.indiceMaximo,
-      p_fecha_inicio: formatearFechas(opcion.fechaInicio),
-      p_fecha_final: formatearFechas(opcion.fechaCierre),
+      p_fecha_inicio: formatearFechas(opcion.fechaInicio)+' '+opcion.horaInicio,
+      p_fecha_final: formatearFechas(opcion.fechaCierre)+' '+opcion.horaCierre,
       p_nombre: opcion.nombre,
       p_periodo_periodo: datosFechas.idPeriodo,
       p_periodo_anio: datosFechas.anioPeriodo,
@@ -756,10 +760,10 @@ const AdmConfPeriodo = () => {
       periodo: {
         p_fec_nota_ini: formatearFechas(datosFechas.fechaIngresoNotas),
         p_fec_nota_fin: formatearFechas(datosFechas.fechaFIngresoNotas),
-        p_periodo_periodo: formatearFechas(datosFechas.idPeriodo),
-        p_periodo_anio: formatearFechas(datosFechas.anioPeriodo),
+        p_periodo_periodo: datosFechas.idPeriodo,
+        p_periodo_anio: datosFechas.anioPeriodo,
         p_periodo_duracion_id: opcionSeleccionada,
-        p_fec_ini_plan:formatearFechas( datosFechas.fechaIPlanificacionAcd),
+        p_fec_ini_plan: formatearFechas(datosFechas.fechaIPlanificacionAcd),
         p_fec_final_plan: formatearFechas(datosFechas.fechaFPlanificacionAcd),
         p_fec_can_exp_ini: formatearFechas(datosFechas.fechaICancelaciones),
         p_fec_can_exp_fin: formatearFechas(datosFechas.fechaFCancelaciones),
@@ -771,8 +775,7 @@ const AdmConfPeriodo = () => {
 
     // Convierte los datos a formato JSON
     const jsonData = JSON.stringify(data);
-    console.log(data);
-    console.log(jsonData);
+  
 
     fetch(apiurl + "/api/v1/admin/configuracion-periodo", {
       method: "POST",
@@ -783,12 +786,14 @@ const AdmConfPeriodo = () => {
       body: jsonData,
     })
       .then((response) => response.json())
-      .then((data) => {console.log(data)
-        alert("Formulario no enviado");})
+      .then((data) => {
+        console.log(data);
+        alert("Formulario enviado Correctamente");
+      })
       .catch((err) => {
         console.error(err);
 
-        alert("Formulario  enviado" +err);
+        alert("Formulario no enviado");
       });
   };
 

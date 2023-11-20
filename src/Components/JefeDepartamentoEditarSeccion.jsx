@@ -50,10 +50,16 @@ export const JefeDepartamentoEditarSeccion = () => {
   };
 
   const acualizarCupos = async (id) => {
+    console.log("Actualizar cupos de la sección", id);
     try {
       const url = apiurl + '/api/v1/secciones/aumentar-cupos';
 
-      if(cuposActuales[id] < secciones[id].MATRICULADOS){
+      const seccion = secciones.find((seccion) => seccion.ID === id);
+      console.log(seccion);
+
+      console.log(cuposActuales[id])
+
+      if(parseInt(cuposActuales[id]) < seccion.MATRICULADOS){
         alert("No se puede disminuir más el número de cupos, ya que hay estudiantes matriculados en la sección");
         return;
       }

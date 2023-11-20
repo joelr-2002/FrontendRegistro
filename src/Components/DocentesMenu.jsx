@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChalkboardTeacher, faCalendarTimes } from "@fortawesome/free-solid-svg-icons";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
 
 //Opciones Menú
 const OpcionesMenu = (props) => {
@@ -23,6 +25,25 @@ const OpcionesMenu = (props) => {
 };
 
 const DocentesMenu = () => {
+
+  const [docenteActual, setDocenteActual] = useState({});
+
+  useEffect(() => {
+  fetch(apiurl + `/api/v1/docentes/perfil}`, {
+    headers: {
+      "x-token": "bearer " + Cookies.get("x-token"),
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      setDocenteActual(data.data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }, []);
+
+
   return (
     <>
       <style>
@@ -48,18 +69,16 @@ const DocentesMenu = () => {
             <h2 style={{ fontFamily: "Heebo", fontWeight: 700 }}>
               Docentes
             </h2>
+            <h5>
+              Bienvenido {docenteActual.PRIMERNOMBRE} {docenteActual.PRIMERAPELLIDO}
+            </h5>
           </Col>
         </Row>
         <Row className="mb-3">
           <OpcionesMenu
-            icono={faChalkboardTeacher}
-            opcion="Ingresar Notas"
-            ruta="/docentes/notas"
-          />
-          <OpcionesMenu
             icono={faCalendarTimes}
             opcion="Clases"
-            //ruta="/docentes/cancelaciones"
+            ruta="/docentes/clases"
           />
         </Row>
       </div>

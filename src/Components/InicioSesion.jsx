@@ -25,7 +25,7 @@ const LoginComponent = () => {
     const rol = Cookies.get('user');
 
     if (!redirected) {
-        if (rol === 'Estudiante') {
+        if (rol === 'estudiante') {
             setRedirected(true);
             window.location.href = '/estudiantes';
         } else if (rol === 'docente') {
@@ -77,7 +77,7 @@ const LoginComponent = () => {
                         Cookies.set('nEmpleado', email);
                         const rol = Cookies.get('user');
                         if (!redirected) {
-                            if (rol === 'Estudiante') {
+                            if (rol === 'estudiante') {
                                 setRedirected(true);
                                 window.location.href = '/estudiantes';
                             } else if (rol === 'docente') {

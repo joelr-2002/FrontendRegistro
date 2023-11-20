@@ -1,58 +1,37 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
+import apiurl from "../utils/apiurl";
+import Cookies from "js-cookie";
 
 export const SubirNotas = () => {
   const num_empleado = localStorage.getItem("id");
-  // const [id, setId] = useState(0);
-
-  const [alumno, setAlumno] = useState([]);
+  const [alumnos, setAlumnos] = useState([]);
   const [editar, setEditar] = useState(false);
-  const [clases, setClases] = useState([]);
-  const [Clase, setClase] = useState(null);
   const [notasTemporales, setNotasTemporales] = useState([]);
   const [mostrarObservacion, setMostrarObservacion] = useState(true);
   const location = useLocation();
-  const id = location.state;
+  const idSeccion = Cookies.get("idSeccion");
 
-  const error = "Error al obtener los datos de la clase";
-
-  // Obtener datos de la clase, enviando el id del docente
   useEffect(() => {
-    const obtenerDatos = async () => {
-      try {
-        const url = `http://localhost:8081/clasesdocentes/${num_empleado}`;
-        const result = await fetch(url);
-        const data = await result.json();
-        setClases(data);
-      } catch {
-        console.log("Error:", error);
-      }
-    };
-    obtenerDatos();
-  }, []);
-  //Filtrar la clase por su id
-  useEffect(() => {
-    if (clases.length > 0) {
-      const buscar = clases.find((clase) => clase.id_clase === parseInt(id));
-      setClase(buscar || null);
-    }
-  }, [clases]);
-  //Traer lista de alumnos de la BD
-  useEffect(() => {
-    const fetchclase = async () => {
+    const fetchAlumnos = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/estudiantes-seccion/${id}`
+          apiurl + `/api/v1/docentes/estudiantes/?seccionID=${idSeccion}`,
+          {
+            headers: {
+              "x-token": "bearer " + Cookies.get("x-token"),
+            },
+          }
         );
         const jsonData = await response.json();
-        setAlumno(jsonData);
+        setAlumnos(jsonData.data);
       } catch (error) {
         console.log("Error:", error);
       }
     };
-    fetchclase();
-  }, [editar]);
+    fetchAlumnos();
+  }, [editar, idSeccion]);
 
   const validarNota = (valor) => {
     const numero = parseInt(valor);
@@ -75,17 +54,16 @@ export const SubirNotas = () => {
     }
   };
 
-  //boton para activar los input de las notas a editar
   const handleEditar = () => {
     setEditar(true);
     setMostrarObservacion(false);
-    const notasTemporalesInicializadas = alumno.map((dato) => ({
-      num_cuenta: dato.num_cuenta,
-      nota: dato.nota || "",
+    const notasTemporalesInicializadas = alumnos.map((alumno) => ({
+      num_cuenta: alumno.N_CUENTA,
+      nota: alumno.NOTA || "",
     }));
     setNotasTemporales(notasTemporalesInicializadas);
   };
-  //boton para guardar las notas editadas
+
   const handleGuardar = async () => {
     for (const { num_cuenta, nota } of notasTemporales) {
       await guardarNotasEnBaseDeDatos(num_cuenta, nota);
@@ -94,44 +72,35 @@ export const SubirNotas = () => {
     setMostrarObservacion(true);
   };
 
-  // Reemplazar endpont por el nuevo, el cual recive: id_clase, nota y num_cuenta
-  // router.post('/insertar-nota-clasepasada', insertarclasepasada
   const guardarNotasEnBaseDeDatos = async (num_cuenta, nota) => {
     try {
-      const url = `http://localhost:8081/insertar-nota-clasepasada`;
+      const url = apiurl + `/api/v1/docentes/notas`;
 
       const data = {
-        id_clase: id,
-        id_estudiante: num_cuenta,
+        correo_electronico: alumnos.find(
+          (alumno) => alumno.N_CUENTA === num_cuenta
+        )?.CORREO,
         nota: nota,
+        cuenta: num_cuenta,
+        seccion: idSeccion,
       };
+
+      console.log(data);
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-token": "bearer " + Cookies.get("x-token"),
         },
         body: JSON.stringify(data),
       });
       if (response.ok) {
-        // console.log(`Nota actualizada`);
+        console.log("Nota guardada en la base de datos");
       } else {
         console.log("Error al guardar la nota en la base de datos");
       }
     } catch (error) {
       console.log("Error:", error);
-    }
-  };
-
-  const notificarSubidaDeNotas = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8081/enviar-correos-notificacion/${id}`
-      );
-      if (response.ok) {
-        alert(`Notificación enviada`);
-      }
-    } catch (error) {
-      console.error("Error-->", error);
     }
   };
 
@@ -143,29 +112,12 @@ export const SubirNotas = () => {
 
   return (
     <>
-      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png"/>
+      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
       <div className="containerP">
-        {/* Boton para regresar a la pagina anterior */}
         <div className="col">
-          <div className="row">
-            <div className="d-flex justify-content-center my-3">
-              {Clase && (
-                <>
-                  <div className="col">
-                    <div className="d-flex justify-content-center my-3">
-                      <h4>Clase: {Clase.nombre_clase}</h4>
-                    </div>
-                    <div className="d-flex justify-content-center my-3">
-                      <h5>Sección: {Clase.id_seccion}</h5>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
           <div className="col">
             <div className="row">
-              {/* Editar notas de los estudiantes */}
+              {/* Botones Editar y Notificar */}
               {!editar && (
                 <>
                   <div className="d-flex justify-content-center">
@@ -175,13 +127,6 @@ export const SubirNotas = () => {
                     >
                       Editar
                     </button>
-
-                    <button
-                      className="btn btn-w btn-secciones m-1"
-                      onClick={notificarSubidaDeNotas}
-                    >
-                      Notificar a Estudiantes
-                    </button>
                   </div>
                 </>
               )}
@@ -189,7 +134,7 @@ export const SubirNotas = () => {
           </div>
           <div className="col">
             <div className="row">
-              {/* Guardar notas de los estudiantes */}
+              {/* Botón Guardar */}
               {editar && (
                 <>
                   <div className="d-flex justify-content-center">
@@ -206,14 +151,15 @@ export const SubirNotas = () => {
           </div>
 
           <div className="row my-3">
+            {/* Tabla de alumnos y notas */}
             <table className="table table-striped table-bordered ">
               <thead>
                 <tr>
                   <th scope="col" className="text-center">
-                    Nombre
+                    Número de Cuenta
                   </th>
                   <th scope="col" className="text-center">
-                    Apellido
+                    Nombre
                   </th>
                   <th scope="col" className="text-center">
                     Nota
@@ -224,37 +170,35 @@ export const SubirNotas = () => {
                 </tr>
               </thead>
               <tbody>
-                {alumno?.map((dato, index) => (
+                {alumnos?.map((alumno, index) => (
                   <tr key={index}>
                     <td scope="row" className="text-center">
-                      {dato.primer_nombre}
+                      {alumno.N_CUENTA}
                     </td>
                     <td scope="row" className="text-center">
-                      {dato.primer_apellido}
+                      {alumno.NOMBRE_COMPLETO}
                     </td>
                     <td scope="row" className="text-center">
                       {editar ? (
                         <>
-                          <td scope="row" className="text-center">
-                            <input
-                              className="form-control "
-                              type="text"
-                              value={
-                                notasTemporales.find(
-                                  (notaTemporal) =>
-                                    notaTemporal.num_cuenta === dato.num_cuenta
-                                )?.nota || ""
-                              }
-                              onChange={(event) =>
-                                numeroDeEntrada(event, dato.num_cuenta)
-                              }
-                            />
-                          </td>
+                          <input
+                            className="form-control "
+                            type="text"
+                            value={
+                              notasTemporales.find(
+                                (notaTemporal) =>
+                                  notaTemporal.num_cuenta === alumno.N_CUENTA
+                              )?.nota || ""
+                            }
+                            onChange={(event) =>
+                              numeroDeEntrada(event, alumno.N_CUENTA)
+                            }
+                          />
 
                           {!validarNota(
                             notasTemporales.find(
                               (notaTemporal) =>
-                                notaTemporal.num_cuenta === dato.num_cuenta
+                                notaTemporal.N_CUENTA === alumno.N_CUENTA
                             )?.nota
                           ) && (
                             <p style={{ color: "red" }}>
@@ -263,16 +207,16 @@ export const SubirNotas = () => {
                           )}
                         </>
                       ) : (
-                        <p>{dato.nota ? dato.nota : "--"}</p>
+                        <p>{alumno.NOTA ? alumno.NOTA : "--"}</p>
                       )}
                     </td>
-                    {dato.nota === "" ? (
+                    {alumno.NOTA === "" ? (
                       <td scope="row" className="text-center">
                         {" "}
                       </td>
                     ) : (
                       mostrarObservacion &&
-                      (dato.nota >= 65 ? (
+                      (alumno.NOTA >= 65 ? (
                         <td scope="row" className="text-center">
                           Aprobó
                         </td>
@@ -289,13 +233,13 @@ export const SubirNotas = () => {
           </div>
         </div>
         <div className="d-flex justify-content-center">
-        <button className="btn btn-outline-danger my-3" onClick={regresar}>
-          Atrás
-        </button>
+          {/* Botón Atrás */}
+          <button className="btn btn-outline-danger my-3" onClick={regresar}>
+            Atrás
+          </button>
         </div>
       </div>
     </>
-
   );
 };
 

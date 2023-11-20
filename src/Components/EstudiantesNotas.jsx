@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Row, Col } from 'react-bootstrap';
 import NavbarLoggedComponente from './NavbarLoggedComponente';
+import Cookies from "js-cookie";
+import apiurl from "../utils/apiurl";
 
-const notas = [
-  { codigo_clase: 'MM-110', clase: 'Matemáticas', nota: 65, Estado: 'APR' },
-  { codigo_clase: 'HH-110' ,clase: 'Historia', nota: 80, Estado: 'APR' },
-  { codigo_clase: 'FF-101' ,clase: 'Ciencias', nota: 91, Estado: 'APR' },
-];
+const notas = "";
 
 const NotasEstudiante = () => {
+
+  const [notas, setNotas] = useState([]);
+
+  useEffect(() => {
+    fetch(
+      apiurl +
+        "/api/v1/estudiante/notas",
+      {
+        headers: {
+          "x-token": "bearer " + Cookies.get("x-token"),
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setNotas(data.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  
   return (
     <>
     <NavbarLoggedComponente urlLogo="../../assets/unah_logo.png">
@@ -39,10 +59,10 @@ const NotasEstudiante = () => {
         <tbody>
           {notas.map((nota, index) => (
             <tr key={index}>
-              <td>{nota.codigo_clase}</td>
-              <td>{nota.clase}</td>
-              <td>{nota.nota}</td>
-              <td>{nota.Estado}</td>
+              <td>{nota.SECCION_NOMBRE}</td>
+              <td>{nota.NOMBRE_ASIGNATURA}</td>
+              <td>{nota.CALIFICACION}</td>
+              <td>{nota.CALIFICACION >= 65 ? "Aprobado" : nota.CALIFICACION === null ? "Sin Evaluar" : nota.CALIFICACION === 0 ? "NSP" : "Reprobado"}</td>
             </tr>
           ))}
         </tbody>

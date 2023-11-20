@@ -87,6 +87,23 @@ const JefeDepartamentoMenu = () => {
             <h5>
                 Centro Universitario: {user.CENTRO}
             </h5>
+            
+            <Link to="/docentes">
+              <Button className="btn-secciones opciones-menu opciones"
+              style={
+                { 
+                  backgroundColor: "#ebf0f3",
+                  borderColor: "none !important",
+                  fontWeight: "700",
+                  fontFamily: "Heebo",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  boxShadow: "10px #000000",
+                }
+              }
+              >Ingresar como docente</Button>
+            </Link>
+
           </Col>
         </Row>
         <Row className="mb-3">

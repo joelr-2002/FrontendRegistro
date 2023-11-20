@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import CSVReader from "react-csv-reader";
-import { CSVLink } from "react-csv";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
@@ -15,14 +14,10 @@ const AdmAspirantes = () => {
 
   const handleCSV = (data, fileInfo) => {
     console.log("Data:", data);
-  
-  
-      setCsvData(data);
-      setFileSelected(true);
-      setCSVError(false);
-    
+    setCsvData(data);
+    setFileSelected(true);
+    setCSVError(false);
   };
-  
 
   const resetearErrores = () => {
     setCSVError(false);
@@ -33,11 +28,13 @@ const AdmAspirantes = () => {
       setCSVError(true);
       return;
     }
-  
+
     const fileName = "notas_aspirantes.csv";
+    const csvString = csvData.map(row => row.join(",")).join("\n");
+
     const formData = new FormData();
-    formData.append("notas_aspirantes", new File([csvData[0][0]], fileName));
-  
+    formData.append("notas_aspirantes", new Blob([csvString], { type: "text/csv" }), fileName);
+
     fetch(apiurl + "/api/v1/admisiones/cargar-notas", {
       method: "POST",
       headers: {
@@ -51,17 +48,17 @@ const AdmAspirantes = () => {
       })
       .then((data) => {
         console.log(data);
+        fileInputRef.current.value = ""; // Limpiar el nombre del archivo después de enviarlo
+        setFileSelected(false);
       })
       .catch((err) => {
         console.error(err);
       });
-  
+
     resetearErrores();
-  
+
     alert("Archivo enviado correctamente");
   };
-  
-  
 
   return (
     <>
@@ -75,9 +72,7 @@ const AdmAspirantes = () => {
           }
         `}
       </style>
-      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png">
-        {" "}
-      </NavbarLoggedInComponent>
+      <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
 
       <div className="containerP text-center">
         <h2>Aspirantes</h2>
