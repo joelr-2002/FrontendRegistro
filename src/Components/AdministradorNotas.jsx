@@ -45,14 +45,14 @@ const AdmNotas = () => {
         <div>Habilitar que los docentes puedan subir notas</div>
           <div><EstadoN estado={habilitadoNotas}/></div>
         <Button
-          className="btn-habilitar"
+          className="btn-seccionesNoMargin"
           value={true}
           onClick={(e1) => setHabilitadoNotas(e1.target.value)}
         >
           Habilitar
         </Button>
         <Button
-          className="btn-deshabilitar"
+          className="btn-seccionesNoMargin"
           value={false}
           onClick={(e2) => setHabilitadoNotas(e2.target.value)}
         >

@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie';
 import React from 'react';
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 function onLogout() {
   Cookies.remove('x-token');
@@ -41,7 +42,10 @@ const NavbarLoggedInComponent = ({ urlLogo }) => {
           <span style={{ marginLeft: '7%' }}>Registro UNAH</span>
         </Navbar.Brand>
         <Nav className="ml-auto">
-          <Button variant="danger" onClick={onLogout}>Cerrar Sesión</Button>
+          <Button variant="danger" onClick={onLogout}>
+            <FontAwesomeIcon icon={faSignOutAlt} size='1.5x' />
+             {" "} Cerrar Sesión
+          </Button>
         </Nav>
       </Container>
     </Navbar>

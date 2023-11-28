@@ -1,3 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.h1, .h2, .h3, .h4, .h5, .h6, .p, .a, h1, h2, h3, h4, h5, h6, p, a {
+  font-family: 'Heebo', sans-serif !important;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -155,9 +163,9 @@ code {
 
 /*Estilos Contenedor*/
 .containerP {
-  margin-top: 5%;
-  max-width: 80%;
-  height: 530px;
+  
+  max-width: 80% !important;
+  height: 530px !important;
   margin: 2% auto;
   padding: 20px;
   border-radius: 10px;
@@ -184,16 +192,22 @@ code {
 }
 
 .opciones-menu{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  text-align: center;
   margin-top: 5%;
-  margin: 2% auto;
   padding: 20px;
   border-radius: 10px;
   background-color: #ebf0f3;
-  text-align: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   font-family: 'Heebo';
   font-size: 25px;
   color: #01587a;
+  height: 190px;
 }
 
 .opciones-menu:hover {
@@ -270,7 +284,7 @@ code {
 
 .table tbody td {
   border-bottom: 1px solid #01587a;
-  border-radius: 10px !important;
+  border-radius: 10px ;
 }
 
 .table tbody tr:last-child td {
@@ -300,13 +314,31 @@ code {
   color: #fff !important;
 }
 
+.btn-seccionesNoMargin{
+  background-color: white !important;
+  border-color: #01587a !important;
+  color: #01587a !important;
+  border-radius: 10px;
+  font-family: "Heebo", sans-serif;
+  font-weight: 700;
+  width: auto !important;
+  margin: 10px;
+}
+
+.btn-seccionesNoMargin:hover {
+  background-image: linear-gradient(#01587a, #5cb3c1) !important;
+  color: #fff !important;
+}
+
 .btn-secciones-danger{
+  background-color: white !important;
   border-color: red !important;
   color: red !important;
   border-radius: 10px;
   font-family: "Heebo", sans-serif;
   font-weight: 700;
   margin: 10px;
+  width: auto !important; 
 }
 
 .btn-secciones-danger:hover {
@@ -315,3 +347,154 @@ code {
 }
 
 /* Fin Estilos de la tabla */
+
+/* Estilos de listas y formularios*/
+
+.list-group li {
+  height: 60px;
+}
+
+.list-group-item {
+  border: #01587a solid 100% !important;
+  background-color: #ebf0f3;
+  color: #01587a !important;
+  font-family: 'Heebo';
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.list-group-item:hover {
+  background-color: #c7d8dd;
+}
+
+.list-group-item.active {
+  background-color: #01587a !important;
+  color: #fff !important;
+  border: #01587a solid 100% !important;
+  font-family: 'Heebo';
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.list-group-item.active:hover {
+  background-color: #5cb3c1 !important;
+}
+
+.list-group-item.active:focus {
+  background-color: #5cb3c1 !important;
+}
+
+.list-group-item.active:active {
+  background-color: #5cb3c1 !important;
+}
+
+.list-group-item.active:visited {
+  background-color: #5cb3c1 !important;
+}
+
+.form-control {
+  font-family: 'Heebo';
+  font-weight: 300;
+}
+
+/* Fin Estilos de listas y formularios*/
+
+/* Estilos de td overflow */
+
+.text-overflow {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-overflow-expanded {
+  max-width: none;
+  overflow: visible;
+  white-space: normal;
+}
+
+.more-content {
+  cursor: pointer;
+  color: #01587a;
+}
+
+/* Fin Estilos de td overflow */
+
+/*Estilo Lista desplegable*/
+
+.listaD {
+  background-color: #01587a;
+}
+
+.fila-seleccionada {
+  background-color: #01587a !important;
+  color: white !important;
+  border:none !important;
+  border-radius:0 !important;
+
+}
+
+
+tr:hover {
+  background-color: #f0f0f0;
+
+}
+
+.centrado{
+  text-align: "center" !important; 
+  vertical-align: "middle" !important;
+}
+
+/*Estilos Card*/
+
+.titulo-card{
+  background-color: #01587a !important;
+  color: white !important
+}
+
+/*Fin estilos card*/
+
+
+/* Estilos para la información del docente */
+.docente-info {
+  margin-bottom: 20px;
+}
+
+.docente-info p {
+  margin-bottom: 8px;
+}
+
+/* Estilos para la imagen en círculo */
+.foto-circulo {
+  width: 150px; /* Puedes ajustar el tamaño según tus preferencias */
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: 0 auto; /* Centrar la imagen */
+}
+
+.foto-circulo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Estilos para el Switch */
+
+.switch {
+  background-color: #01587a;
+  margin-left: 5%;
+}
+
+.switch:active {
+  background-color: #5cb3c1;
+}
+
+.switch:hover {
+  background-color: #99d8dd;
+}
+
+.switch:hover:active {
+  background-color: #01587a;
+}

@@ -4,6 +4,7 @@ import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import "../Styles/index.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Atras from "./utils/Regresar.jsx";
 
 const OpcionesPeriodo = (props) => {
   return (
@@ -24,11 +25,10 @@ const AdmPeriodo = () => {
     // y manejar la respuesta (por ejemplo, mostrar un mensaje de éxito)
   };
 
-
   const estiloBtn = {
     position: "fixed",
     right: "10%",
-    color: "white"
+    color: "white",
   };
   return (
     <>
@@ -46,25 +46,37 @@ const AdmPeriodo = () => {
         {" "}
       </NavbarLoggedInComponent>
       <div className="containerP text-center">
+        <Atras />
         <h2 className="titulos">Configuración de Periodos</h2>
         <div>
-        <Row className="mb-12">
-                <Link to="/administrador/actualizar-periodo" style={{ textDecoration: "none" }}>
-                  <OpcionesPeriodo opcion="Semestral" />
-                </Link>
-              </Row>
-              <Row className="mb-12">
-                <Link to="/administrador/actualizar-periodo" style={{ textDecoration: "none" }}>
-                  <OpcionesPeriodo opcion="Trimestral" />
-                </Link>
-              </Row>
+          <Row className="mb-12">
+            <Col>
+            <Link
+              to="/administrador/actualizar-periodo"
+              style={{ textDecoration: "none" }}
+            >
+              <OpcionesPeriodo opcion="Semestral" />
+            </Link>
+            
+            </Col>
+            <Col>
+            <Link
+              to="/administrador/actualizar-periodo"
+              style={{ textDecoration: "none" }}
+            >
+              <OpcionesPeriodo opcion="Trimestral" />
+            </Link>
+            </Col>
+            
+          </Row>
 
-              <div >
-                <Link to="/administrador/nuevo-periodo">
-                  <Button type="button" className="btnE1" style={estiloBtn}>Crear un Nuevo Periodo
-                  </Button>
-                </Link>
-              </div>
+          <div>
+            <Link to="/administrador/nuevo-periodo">
+              <Button type="button" className="btn-seccionesNoMargin" style={estiloBtn}>
+                Crear un Nuevo Periodo
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </>

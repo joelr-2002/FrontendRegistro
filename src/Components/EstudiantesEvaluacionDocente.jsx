@@ -13,6 +13,7 @@ import NavbarLoggedComponente from "./NavbarLoggedComponente";
 import Cookies from "js-cookie";
 import apiurl from "../utils/apiurl";
 import { faYinYang } from "@fortawesome/free-solid-svg-icons";
+import Atras from "./utils/Regresar"
 
 const EvaluacionDocenteForm = (props) => {
   const [evaluacion, setEvaluacion] = useState({
@@ -68,6 +69,7 @@ const EvaluacionDocenteForm = (props) => {
   return (
     <>
       <Container className="containerP">
+        <Atras/>
         <Row className="mb-3">
           <Col>
             <h2
@@ -102,10 +104,11 @@ const EvaluacionDocenteForm = (props) => {
                       >
                         SELECCIONE UNA OPCIÓN
                       </option>
-                      <option value={1}>MALO</option>
-                      <option value={2}>BUENO</option>
-                      <option value={3}>MUY BUENO</option>
-                      <option value={4}>EXCELENTE</option>
+                      <option value={1}>MUY MALO</option>
+                      <option value={2}>MALO</option>
+                      <option value={3}>BUENO</option>
+                      <option value={4}>MUY BUENO</option>
+                      <option value={5}>EXCELENTE</option>
                     </Form.Control>
                   </Col>
                 </Row>
@@ -130,10 +133,11 @@ const EvaluacionDocenteForm = (props) => {
                       >
                         SELECCIONE UNA OPCIÓN
                       </option>
-                      <option value={1}>MALO</option>
-                      <option value={2}>BUENO</option>
-                      <option value={3}>MUY BUENO</option>
-                      <option value={4}>EXCELENTE</option>
+                      <option value={1}>MUY MALO</option>
+                      <option value={2}>MALO</option>
+                      <option value={3}>BUENO</option>
+                      <option value={4}>MUY BUENO</option>
+                      <option value={5}>EXCELENTE</option>
                     </Form.Control>
                   </Col>
                 </Row>
@@ -160,10 +164,11 @@ const EvaluacionDocenteForm = (props) => {
                       >
                         SELECCIONE UNA OPCIÓN
                       </option>
-                      <option value={1}>MALO</option>
-                      <option value={2}>BUENO</option>
-                      <option value={3}>MUY BUENO</option>
-                      <option value={4}>EXCELENTE</option>
+                      <option value={1}>MUY MALO</option>
+                      <option value={2}>MALO</option>
+                      <option value={3}>BUENO</option>
+                      <option value={4}>MUY BUENO</option>
+                      <option value={5}>EXCELENTE</option>
                     </Form.Control>
                   </Col>
                 </Row>
@@ -191,7 +196,7 @@ const EvaluacionDocenteForm = (props) => {
             <div className="col-md-6">
               <Button
                 href="/estudiantes/evaluacion-docente"
-                variant="primary"
+                className="btn-seccionesNoMargin"
                 type="button"
                 disabled={
                   evaluacion.areaAcademica == "" ||
@@ -289,7 +294,7 @@ const EvaluacionDocentes = () => {
                   {clase.ESTADO_EVALUACION === 0 ? (
                     <>
                       <Button
-                        className="btnE2"
+                        className="btn-seccionesNoMargin"
                         onClick={() => handleOpenModal(clase.ID_SECCION)}
                       >
                         Por Evaluar{" "}
@@ -297,7 +302,7 @@ const EvaluacionDocentes = () => {
                     </>
                   ) : (
                     <>
-                      <Button className="btnE1" disabled>
+                      <Button className="btn-seccionesNoMargin" disabled>
                         Evaluado{" "}
                       </Button>
                     </>
@@ -317,11 +322,7 @@ const EvaluacionDocentes = () => {
           </Modal.Body>
         </Modal>
 
-        <div className="col-md-4">
-          <Button href="/estudiantes" variant="secondary" type="submit">
-            Regresar
-          </Button>
-        </div>
+        
       </Container>
     </>
   );

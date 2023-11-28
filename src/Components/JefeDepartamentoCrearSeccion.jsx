@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import apiurl from "../utils/apiurl";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import Cookies from "js-cookie";
+import Regresar from "./utils/Regresar";
 
 const FormularioCrearClases = () => {
   const [centro, setCentro] = useState([]);
@@ -180,7 +181,33 @@ const Guardar = () => {
 
       if (mensaje === "SECCION CREADA CORRECTAMENTE") {
         alert("Sección creada con éxito");
-        navigate("/jefe-departamento/secciones");
+        
+        // Limpia los campos del formulario
+        setSelectedClase("");
+        setSelectedDocente("");
+        setselectedEdificio("");
+        setSelectedAula("");
+        setCuposDisponibles("");
+        setHoraInicial("00");
+        setHoraFinal("00");
+        setDuracion("");
+        setCheckboxValues({
+          Lunes: false,
+          Martes: false,
+          Miercoles: false,
+          Jueves: false,
+          Viernes: false,
+          Sabado: false,
+          Domingo: false,
+        });
+        setLunes("");
+        setMartes("");
+        setMiercoles("");
+        setJueves("");
+        setViernes("");
+        setSabado("");
+        setDomingo("");
+        
       } else {
         // Mostrar mensajes de acuerdo al contenido de `mensaje`
         if (mensaje.includes("EXISTE UN TRASLAPE DE AULA")) {
@@ -311,6 +338,7 @@ const Guardar = () => {
     <>
       <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
       <div className="containerP">
+        <Regresar/>
         <h2 className="text-center my-4">Crear Sección</h2>
         <div className="row">
           <div className="col">
@@ -659,6 +687,22 @@ const Guardar = () => {
                 Guardar Sección
               </button>
             </div>
+
+            <div
+            style={
+              {
+                marginTop: "-30px",
+              }
+            } 
+            className="d-flex justify-content-center col-12 col-md-12">
+            <a href="/jefe-departamento/secciones">
+              <button className="btn btn-secciones mt-4"> 
+                Ver Secciones
+              </button>
+            </a>
+            </div>
+
+
             <div
             style={
               {
@@ -666,10 +710,12 @@ const Guardar = () => {
               }
             } 
             className="d-flex justify-content-center col-12 col-md-12">
+
             <button className="btn btn-outline-danger mt-4" onClick={regresar}>
                 Atrás
               </button>
             </div>
+
             </Row>
           </div>
         </div>

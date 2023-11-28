@@ -2,7 +2,11 @@ import React from 'react';
 import { Navbar, Container } from 'react-bootstrap';
 import { Router } from 'react-router-dom';
 
-const NavbarComponent = () => {
+const NavbarComponent = (urlLogo) => {
+  
+  //objeto a array
+  urlLogo = Object.values(urlLogo);
+
   return (
     <>
     <style>
@@ -20,16 +24,16 @@ const NavbarComponent = () => {
     }}
     >
       <Container>
-        <Navbar.Brand href="/" className="ml-auto">
+        <Navbar.Brand href="/">
           <img
             alt="UNAH Logo"
-            src="./assets/unah_logo.png"
+            src={urlLogo[0] === undefined ? './assets/unah_logo.png' : urlLogo[0]}
             width="77"
             height="48.5"
             className="d-inline-block align-top"
             style={{ marginLeft: '-6.5%' }}
           />{' '}
-          <span style={{ marginLeft: '7%' }}>Registro UNAH</span>
+          <span className="ml-2">Registro UNAH</span>
         </Navbar.Brand>
       </Container>
     </Navbar>

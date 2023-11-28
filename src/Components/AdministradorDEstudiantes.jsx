@@ -3,6 +3,7 @@ import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import {Button } from "react-bootstrap";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
+import Atras from "./utils/Regresar.jsx"
 
 const AdmDEstudiantes = () => {
   const handleDownload = () => {
@@ -56,10 +57,11 @@ const AdmDEstudiantes = () => {
 
 
       <div className="containerP text-center">
+        <Atras/>
         <h2>Estudiantes</h2>
         <br />
 
-        <Button className="btnE1" onClick={handleDownload}>Descargar CSV</Button>
+        <Button className="btn-seccionesNoMargin" onClick={handleDownload}>Descargar CSV</Button>
       </div>
       
     </div>

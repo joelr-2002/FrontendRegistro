@@ -4,6 +4,7 @@ import CSVReader from "react-csv-reader";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
+import Atras from "./utils/Regresar.jsx";
 
 const AdmAspirantes = () => {
   const [csvData, setCsvData] = useState([]);
@@ -30,10 +31,14 @@ const AdmAspirantes = () => {
     }
 
     const fileName = "notas_aspirantes.csv";
-    const csvString = csvData.map(row => row.join(",")).join("\n");
+    const csvString = csvData.map((row) => row.join(",")).join("\n");
 
     const formData = new FormData();
-    formData.append("notas_aspirantes", new Blob([csvString], { type: "text/csv" }), fileName);
+    formData.append(
+      "notas_aspirantes",
+      new Blob([csvString], { type: "text/csv" }),
+      fileName
+    );
 
     fetch(apiurl + "/api/v1/admisiones/cargar-notas", {
       method: "POST",
@@ -50,6 +55,8 @@ const AdmAspirantes = () => {
         console.log(data);
         fileInputRef.current.value = ""; // Limpiar el nombre del archivo después de enviarlo
         setFileSelected(false);
+        alert("Archivo enviado correctamente");
+        
       })
       .catch((err) => {
         console.error(err);
@@ -57,7 +64,7 @@ const AdmAspirantes = () => {
 
     resetearErrores();
 
-    alert("Archivo enviado correctamente");
+   
   };
 
   return (
@@ -73,8 +80,9 @@ const AdmAspirantes = () => {
         `}
       </style>
       <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
-
+      
       <div className="containerP text-center">
+      <Atras />
         <h2>Aspirantes</h2>
         <br />
 
@@ -93,7 +101,7 @@ const AdmAspirantes = () => {
           </p>
         )}
 
-        <Button className={"btnE1"} onClick={handleUpload}>
+        <Button className={"btn-seccionesNoMargin"} onClick={handleUpload}>
           Subir Notas de Aspirantes
         </Button>
       </div>

@@ -5,7 +5,7 @@ import { CSVLink } from "react-csv";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
-
+import Atras from "./utils/Regresar.jsx"
 const AdmSEstudiantes = () => {
   const [csvData, setCsvData] = useState([]);
   const [fileSelected, setFileSelected] = useState(false);
@@ -92,6 +92,7 @@ const AdmSEstudiantes = () => {
       </NavbarLoggedInComponent>
 
       <div className="containerP text-center">
+        <Atras/>
         <h2>Estudiantes</h2>
         <br />
 
@@ -110,7 +111,7 @@ const AdmSEstudiantes = () => {
           </p>
         )}
 
-        <Button className={"btnE1"} onClick={handleUpload}>
+        <Button className={"btn-seccionesNoMargin"} onClick={handleUpload}>
           Subir Estudiantes
         </Button>
       </div>

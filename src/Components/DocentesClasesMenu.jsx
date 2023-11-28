@@ -12,11 +12,17 @@ const OpcionesMenu = (props) => {
   return (
     <>
     <Col>
-      <Link to={props.ruta} style={{ textDecoration: "none" }}>
-        <div className="opciones-menu opciones">
-          <FontAwesomeIcon icon={props.icono} size="1.8x" />
-          <br></br>
+      <Link to={props.ruta} style={{ textDecoration: "none", height: "500px" }}>
+        <div className="opciones-menu opciones ">
+          <Row>
+            <Col>
+            <FontAwesomeIcon icon={props.icono} size="1.8x" />
+            </Col>
+          </Row>
+          <Row>
           {props.opcion}
+          </Row>
+          <br></br>
         </div>
       </Link>
     </Col>

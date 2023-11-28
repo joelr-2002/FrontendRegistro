@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Row, Col, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import NavbarComponente from './NavbarComponente';
@@ -19,6 +19,7 @@ const LoginComponent = () => {
     const [passwordError, setPasswordError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [passwordUserError, setPasswordUserError] = useState(false);
+    const [cookiIsSet, setCookieIsSet] = useState(false);
 
     //Revisa el rol guardado en la cookie para redirigir al usuario a la página correspondiente
     const [redirected, setRedirected] = useState(false);
@@ -49,12 +50,14 @@ const LoginComponent = () => {
         e.preventDefault();
         validateForm();
         setIsLoading(true);
-        
+
+
         //Si email tiene letras o carácteres especiales, no es válido
        
         //Si email y password son válidos, se realiza la autenticación
         if (emailValid && passwordValid) {
             //Se realiza la petición
+            setCookieIsSet(true);
             fetch(apiurl+'/api/v1/login', {
                 method: 'POST',
                 headers: {
@@ -94,6 +97,8 @@ const LoginComponent = () => {
                     }
 
                     if (data.mensaje === 'Usuario o contraseña incorrecto!' || data.mensaje.includes('Ocurrio un error al iniciar sesión:')) {
+                        setIsLoading(false);
+                        setCookieIsSet(false);
                         console.log('Usuario o contraseña incorrectos');
                         setPasswordUserError(true);
                     }
@@ -103,6 +108,7 @@ const LoginComponent = () => {
                 .catch((err) =>{
                     console.error(err)
                     setPasswordUserError(true);
+                    setCookieIsSet(false);
                     setIsLoading(false);});
         }
         //Si el usuario o la contraseña son incorrectos, se muestra un mensaje de error 
@@ -134,6 +140,12 @@ const LoginComponent = () => {
         }
     };
 
+    useEffect(() => {
+        if(Cookies.get('x-token') !== undefined && !cookiIsSet){
+            setCookieIsSet(true);
+        }
+    }, [cookiIsSet]);
+
     return (
         <>
             <style>
@@ -153,7 +165,7 @@ const LoginComponent = () => {
                 `}
             </style>
             <NavbarComponente />
-            <div className="login-container" disabled={isLoading}>
+            <div className="login-container mx-auto sm:h-full md:h-3/4 lg:h-2/3 xl:h-1/2" disabled={isLoading}>
                 <div className="login-content">
                     <Row className="mb-3">
                         <Col>
@@ -191,8 +203,8 @@ const LoginComponent = () => {
 
                         <Row className="mb-3">
                             <Col>
-                                <Button variant="primary" type="submit" disabled={isLoading}>
-                                    {isLoading ? <Spinner animation="border" size="sm" /> : 'Ingresar'}
+                                <Button variant="primary" type="submit" disabled={cookiIsSet}>
+                                    {isLoading ? <Spinner animation="border" size="sm" /> : cookiIsSet ? <Spinner animation="border" size="sm" />: 'Ingresar'}
                                 </Button>
                             </Col>
                         </Row>

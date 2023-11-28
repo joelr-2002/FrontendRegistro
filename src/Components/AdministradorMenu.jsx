@@ -15,16 +15,22 @@ import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 const OpcionesMenu = (props) => {
   return (
     <>
-      <Col>
-        <Link to={props.ruta} style={{ textDecoration: "none" }}>
-          <div className="opciones-menu opciones" onClick={props.onClick}>
+    <Col>
+      <Link to={props.ruta} style={{ textDecoration: "none", height: "500px" }} onClick={props.onCLick}>
+        <div className="opciones-menu opciones active:animate-[ping_0.5s_ease-in-out_infinite]">
+          <Row>
+            <Col>
             <FontAwesomeIcon icon={props.icono} size="1.8x" />
-            <br></br>
-            {props.opcion}
-          </div>
-        </Link>
-      </Col>
-    </>
+            </Col>
+          </Row>
+          <Row>
+          {props.opcion}
+          </Row>
+          <br></br>
+        </div>
+      </Link>
+    </Col>
+  </>
   );
 };
 
@@ -32,12 +38,14 @@ const OpcionesMenu = (props) => {
 const AdmMenu = () => {
   const [modalShow, setModalShow] = useState(false);
 
-  const handleModalOpen = () => {
+  const handleMostarModal = () => {
     setModalShow(true);
+    console.log("mostar "+modalShow)
   };
 
   const handleModalClose = () => {
     setModalShow(false);
+    console.log("mostar")
   };
   return (
     <>
@@ -80,11 +88,17 @@ const AdmMenu = () => {
             opcion="Aspirantes"
             ruta="/administrador/aspirantes"
           />
+          <Col>
+          <div onClick={handleMostarModal}> 
           <OpcionesMenu
             icono={faGraduationCap}
             opcion="Estudiantes"
-            onClick={handleModalOpen}
+            
+            
           />
+          </div></Col>
+          
+          
         </Row>
 
         <Modal show={modalShow} onHide={handleModalClose}>

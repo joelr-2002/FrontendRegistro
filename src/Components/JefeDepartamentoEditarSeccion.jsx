@@ -4,6 +4,7 @@ import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import Cookies from "js-cookie";
 import apiurl from "../utils/apiurl";
 import { Modal, Button, Form } from "react-bootstrap";
+import Regresar from "./utils/Regresar";
 
 export const JefeDepartamentoEditarSeccion = () => {
   const location = useLocation();
@@ -171,6 +172,7 @@ const confirmarEliminarSeccion = async () => {
     <>
       <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
       <div className="containerP">
+        <Regresar />
         <div className="row my-3">
           <div className="my-3 d-flex justify-content-center">
             <h2>Editar Sección</h2>
@@ -186,6 +188,7 @@ const confirmarEliminarSeccion = async () => {
                     <th scope="col">Aula</th>
                     <th scope="col">Hi</th>
                     <th scope="col">Hf</th>
+                    <th scope="col">Días</th>
                     <th scope="col">Matriculados | Cupos
                     </th>
                     <th scope="col">Lista de espera</th>
@@ -204,6 +207,15 @@ const confirmarEliminarSeccion = async () => {
                       <td scope="row">{seccion.AULA}</td>
                       <td scope="row">{seccion.HORA_INICIO}</td>
                       <td scope="row">{seccion.HORA_FINAL}</td>
+                      <td scope="row">
+                        {seccion.LU === 1 ? 'Lu' : ' '}
+                        {seccion.MA === 1 ? 'Ma' : ' '}
+                        {seccion.MI === 1 ? 'Mi' : ' '}
+                        {seccion.JU === 1 ? 'Ju' : ' '}
+                        {seccion.VI === 1 ? 'Vi' : ' '}
+                        {seccion.SA === 1 ? 'Sa' : ' '}
+                        {seccion.DO === 1 ? 'Do' : ' '}
+                        </td>
                       <td scope="row">
                         {editarCupos[seccion.ID] ? (
                           <input
@@ -234,12 +246,12 @@ const confirmarEliminarSeccion = async () => {
                               )
                             }
                           >
-                            Editar cupos
+                            Editar
                           </button>
                         ) : (
                           <>
                             <div className="row">
-                              <div className="col-6">
+                              <div className="col-12">
                                 <button
                                   className="btn btn-secciones "
                                   onClick={() =>
@@ -249,7 +261,7 @@ const confirmarEliminarSeccion = async () => {
                                   Guardar
                                 </button>
                               </div>
-                              <div className="col-6">
+                              <div className="col-12">
                                 <button
                                   className="btn btn-secciones-danger btn-w "
                                   onClick={() =>
@@ -294,10 +306,10 @@ const confirmarEliminarSeccion = async () => {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="danger" onClick={() => {setShowPasswordModal(true); setShowModal(false)}}>
+          <Button className="btnE1" onClick={() => {setShowPasswordModal(true); setShowModal(false)}}>
             Siguiente
           </Button>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button className="btnE2" onClick={() => setShowModal(false)}>
             Cancelar
           </Button>
         </Modal.Footer>
@@ -320,7 +332,7 @@ const confirmarEliminarSeccion = async () => {
           <Button variant="danger" onClick={confirmarEliminarSeccion}>
             Confirmar Eliminación
           </Button>
-          <Button variant="secondary" onClick={() => setShowPasswordModal(false)}>
+          <Button className="btnE2" onClick={() => setShowPasswordModal(false)}>
             Cancelar
           </Button>
         </Modal.Footer>

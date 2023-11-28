@@ -2,23 +2,35 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap, faCalendarTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGraduationCap,
+  faCalendarTimes,
+  faLandmark,
+  faBook
+} from "@fortawesome/free-solid-svg-icons";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 
 //Opciones Menú
 const OpcionesMenu = (props) => {
   return (
     <>
-    <Col>
-      <Link to={props.ruta} style={{ textDecoration: "none" }}>
-        <div className="opciones-menu opciones">
-          <FontAwesomeIcon icon={props.icono} size="1.8x" />
-          <br></br>
-          {props.opcion}
-        </div>
-      </Link>
-    </Col>
-  </>
+      <Col>
+        <Link
+          to={props.ruta}
+          style={{ textDecoration: "none", height: "500px" }}
+        >
+          <div className="opciones-menu opciones active:animate-[ping_0.5s_ease-in-out_infinite]">
+            <Row>
+              <Col>
+                <FontAwesomeIcon icon={props.icono} size="1.8x" />
+              </Col>
+            </Row>
+            <Row>{props.opcion}</Row>
+            <br></br>
+          </div>
+        </Link>
+      </Col>
+    </>
   );
 };
 
@@ -39,9 +51,7 @@ const EstudianteMenu = () => {
                     }
                 `}
       </style>
-    <NavbarLoggedInComponent
-        urlLogo= "./assets/unah_logo.png"
-    />
+      <NavbarLoggedInComponent urlLogo="./assets/unah_logo.png" />
       <div className="containerP menu-container ">
         <Row className="mb-3">
           <Col>
@@ -60,6 +70,19 @@ const EstudianteMenu = () => {
             icono={faCalendarTimes}
             opcion="Cancelaciones"
             ruta="/estudiantes/cancelaciones"
+          />
+        </Row>
+        <Row className="mb-3">
+          <OpcionesMenu
+            icono={faLandmark}
+            opcion="Matrícula"
+            ruta="/estudiantes/matricula"
+          />
+
+          <OpcionesMenu
+            icono={faBook}
+            opcion="Clases"
+            ruta="/estudiantes/clases"
           />
         </Row>
       </div>
