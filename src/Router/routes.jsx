@@ -15,10 +15,14 @@ import AdmDEstudiantes from "../Components/AdministradorDEstudiantes";
 import EstudiantesMenu from "../Components/EstudiantesMenu";
 import EvaluacionDocentes from "../Components/EstudiantesEvaluacionDocente";
 import EstudiantesNotas from "../Components/EstudiantesNotas";
-import EstudiantesCancelaciones from "../Components/EstudiantesCancelaciones";
+import EstudiantesCancelaciones from "../Components/EstudiantesSolicitudes";
 import EstudiantesMatricula from "../Components/EstudiantesMatricula"
 import EstudiantesClases from "../Components/EstudiantesClases"
 import EstudianteClase from "../Components/EstudianteClase"
+import EstudiantesCertificado from "../Components/EstudiantesCertificado"
+import EstudiantePerfil from "../Components/EstudiantePerfil"
+import EstudiantePerfilEditar from "../Components/EstudiantePerfilEditar"
+import EstudiantesChatMenu from "../Components/EstudiantesChatMenu";
 
 import JefeDepartamentoMenu from "../Components/JefeDepartamentoMenu";
 import JefeDepartamentoPlanificacionAcademica from "../Components/JefeDepartamentoPlanificacionAcademicaMenu";
@@ -31,11 +35,20 @@ import JefeDepartamentoHistorialAcademico from "../Components/JefeDepartamentoHi
 import JefeDepartamentoReiniciarClaveDocente from "../Components/JefeDepartamentoReiniciarClaveDocente";
 import JefeDepartamentoEstadistica from "../Components/JefeDepartamentoEstadisticas";
 
-import DocentesMenu from "../Components/DocentesMenu";
+import DocentesClases from "../Components/Docentes";
 import DocentesSubirNotas from "../Components/DocentesSubirNotas";
-import DocentesClasesMenu from "../Components/DocentesClasesMenu";
+import DocentesClase from "../Components/DocentesClase";
+
+
+import CoordMenu from "../Components/CoordinadorMenu";
+import CoordCargaA from "../Components/CoordinadorCargaA";
+import CoordEstudiantes from "../Components/CoordinadorEstudiantes";
+import CoordSolicitudes from "../Components/CoordinadorSolicitudes";
+
 
 import CambioClave from "../Components/CambioClave";
+
+import Chat from "../Components/Chat";
 
 const RoutesComponent = () => {
   return (
@@ -59,10 +72,14 @@ const RoutesComponent = () => {
         <Route path="/estudiantes" element={<EstudiantesMenu />} />
         <Route path="/estudiantes/evaluacion-docente" element={<EvaluacionDocentes />} />
         <Route path="/estudiantes/notas" element={<EstudiantesNotas />} />
-        <Route path="/estudiantes/cancelaciones" element={<EstudiantesCancelaciones />} />
+        <Route path="/estudiantes/solicitudes" element={<EstudiantesCancelaciones />} />
         <Route path="/estudiantes/matricula" element={<EstudiantesMatricula />} />
         <Route path="/estudiantes/clases" element={<EstudiantesClases />} />
         <Route path="/estudiantes/clase/:ID" element={<EstudianteClase />} />
+        <Route path="/estudiantes/certificado" element={<EstudiantesCertificado />} />
+        <Route path="/estudiantes/perfil" element={<EstudiantePerfil />} />
+        <Route path="/estudiantes/editar-perfil" element={<EstudiantePerfilEditar />} />
+        <Route path="/estudiantes/chat" element={<EstudiantesChatMenu />} />
         
         <Route path="/jefe-departamento" element={<JefeDepartamentoMenu />} />
         <Route path="/jefe-departamento/planificacion-academica-menu" element={<JefeDepartamentoPlanificacionAcademica />} />
@@ -75,14 +92,22 @@ const RoutesComponent = () => {
         <Route path="/jefe-departamento/restablecer-clave-docente" element={<JefeDepartamentoReiniciarClaveDocente />} />
         <Route path="/jefe-departamento/estadistica" element={<JefeDepartamentoEstadistica />} />
 
-        <Route path="/docentes" element={<DocentesMenu />} />
-        <Route path="/docentes/clases" element={<DocentesClasesMenu />} />
+        <Route path="/docentes" element={<DocentesClases />} />
+        <Route path="/docente/clase/:ID" element={<DocentesClase />} />
         <Route path="/docentes/notas" element={<DocentesSubirNotas />} />
 
-        <Route path="/api/v1/docentes/restablecer-clave/" element={<CambioClave />} />
+        <Route path="/coordinador" element={<CoordMenu />} />
+        <Route path="/coordinador/carga-academica" element={<CoordCargaA />} />
+        <Route path="/coordinador/estudiantes" element={<CoordEstudiantes />} />
+        <Route path="/coordinador/solicitudes" element={<CoordSolicitudes />} />
+       
+        <Route path="/api/restablecer-clave/" element={<CambioClave />} />
+
+        <Route path="/chat" element={<Chat />} />
+
       </Routes>
     </Router>
   );
-}
+} 
 
 export default RoutesComponent;

@@ -1,0 +1,60 @@
+[
+  {
+    "cuenta": "20201003543",
+    "nombreCompleto": "Carlos Rubio",
+    "centro": "Ciudad universitaria",
+    "indiceGlobal": 90,
+    "indicePeriodo": 89,
+    "historial": [
+      {
+        "codigo": "abc123",
+        "asignatura": "Espaniol",
+        "uv": 4,
+        "seccion": "1101",
+        "anio": 2020,
+        "periodo": 1,
+        "calificacion": 90,
+        "obs": "APR"
+      },
+      {
+        "codigo": "abc122",
+        "asignatura": "Matematica 1",
+        "uv": 5,
+        "seccion": "1000",
+        "anio": 2020,
+        "periodo": 1,
+        "calificacion": 94,
+        "obs": "APR"
+      }
+    ]  
+  },
+  {
+    "cuenta": "20201006832",
+    "nombreCompleto": "Juan Roman Riquelme",
+    "centro": "Ciudad universitaria",
+    "indiceGlobal": 90,
+    "indicePeriodo": 89,
+    "historial": [
+      {
+        "codigo": "abc123",
+        "asignatura": "Filosofia",
+        "uv": 4,
+        "seccion": "1101",
+        "anio": 2020,
+        "periodo": 1,
+        "calificacion": 90,
+        "obs": "APR"
+      },
+      {
+        "codigo": "abc122",
+        "asignatura": "Sociologia",
+        "uv": 5,
+        "seccion": "1000",
+        "anio": 2020,
+        "periodo": 1,
+        "calificacion": 94,
+        "obs": "APR"
+      }
+    ]  
+  }
+]

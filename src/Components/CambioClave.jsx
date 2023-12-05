@@ -31,7 +31,6 @@ const CambioClave = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setContraseniaError(false);
-    setIsLoading(true);
 
     if (!validarContrasenia(contrasenia)) {
         setContraseniaError(true);
@@ -49,10 +48,10 @@ const CambioClave = () => {
     }else{
         setContraseniaError(false);
         console.log("bien")
-        setIsLoading(true);
     }
     
     if(contraseniaError===false){
+      setIsLoading(true);
         const fetchCambioClave = async () => {
             try{
               const response = await fetch(apiurl + "/api/v1/docentes/restablecer-cuenta/?token=" + token + "&contrasenia=" + contrasenia, {
@@ -91,7 +90,7 @@ const CambioClave = () => {
             }
           `}
       </style>
-      <NavbarComponente urlLogo="../../../../assets/unah_logo.png" />
+      <NavbarComponente urlLogo="../../assets/unah_logo.png" />
       <div
         className="inscripcion-container text-center"
         style={{ position: "relative" }}
@@ -134,7 +133,7 @@ const CambioClave = () => {
             className="btn-seccionesNoMargin"
             type="submit"
             onClick={handleSubmit}
-            disabled={isLoading}
+            Disabled={isLoading}
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : 'Cambiar Clave'}
           </Button>

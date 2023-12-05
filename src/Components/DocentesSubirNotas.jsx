@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Button} from "react-bootstrap";
 import NavbarLoggedInComponent from "./NavbarLoggedComponente";
 import apiurl from "../utils/apiurl";
 import Cookies from "js-cookie";
+import Atras from "./utils/Regresar"
+
 
 export const SubirNotas = () => {
   const num_empleado = localStorage.getItem("id");
@@ -14,6 +17,7 @@ export const SubirNotas = () => {
   const idSeccion = Cookies.get("idSeccion");
 
   useEffect(() => {
+    console.log(idSeccion)
     const fetchAlumnos = async () => {
       try {
         const response = await fetch(
@@ -26,11 +30,14 @@ export const SubirNotas = () => {
         );
         const jsonData = await response.json();
         setAlumnos(jsonData.data);
+        
       } catch (error) {
         console.log("Error:", error);
       }
     };
     fetchAlumnos();
+
+    console.log(alumnos)
   }, [editar, idSeccion]);
 
   const validarNota = (valor) => {
@@ -114,6 +121,7 @@ export const SubirNotas = () => {
     <>
       <NavbarLoggedInComponent urlLogo="../../assets/unah_logo.png" />
       <div className="containerP">
+        <Atras/>
         <div className="col">
           <div className="col">
             <div className="row">
@@ -121,12 +129,12 @@ export const SubirNotas = () => {
               {!editar && (
                 <>
                   <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-w btn-secciones m-1"
+                    <Button
+                      className="btn-seccionesNoMargin"
                       onClick={handleEditar}
                     >
                       Editar
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
@@ -138,12 +146,12 @@ export const SubirNotas = () => {
               {editar && (
                 <>
                   <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-w btn-success m-1"
+                    <Button
+                      className="btn-seccionesNoMargin"
                       onClick={handleGuardar}
                     >
                       Guardar
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
@@ -232,12 +240,7 @@ export const SubirNotas = () => {
             </table>
           </div>
         </div>
-        <div className="d-flex justify-content-center">
-          {/* Botón Atrás */}
-          <button className="btn btn-outline-danger my-3" onClick={regresar}>
-            Atrás
-          </button>
-        </div>
+        
       </div>
     </>
   );

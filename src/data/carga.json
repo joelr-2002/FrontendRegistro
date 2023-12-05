@@ -1,0 +1,116 @@
+{
+  "periodo": 1,
+  "anio": 2023,
+  "secciones": [
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec1234",
+      "cAsignatura": "mm111",
+      "nombreAsignatura": "Matematica 111",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 31,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "210"
+    },
+    {
+      "nSeccion": "sec222",
+      "cAsignatura": "is201",
+      "nombreAsignatura": "Programacion 1",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    },
+    {
+      "nSeccion": "sec123",
+      "cAsignatura": "mm110",
+      "nombreAsignatura": "Matematica 110",
+      "nEmpleado": "20201006999",
+      "docente": "Jose Antonio Borjas",
+      "cantidadEstudiantes": 30,
+      "cupos": 35,
+      "edificio": "B2",
+      "aula": "110"
+    }
+  ]
+}
